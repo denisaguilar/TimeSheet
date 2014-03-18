@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import javax.swing.UIManager;
@@ -22,6 +23,8 @@ import javax.swing.border.TitledBorder;
 
 import br.dev.func.Function;
 import br.dev.func.Util;
+import br.dev.view.CustomTime;
+import br.dev.view.NewTimeSheet;
 
 import com.sun.jmx.snmp.tasks.Task;
 
@@ -144,17 +147,17 @@ public class Prototype {
 		textEndTime.setBounds(6, 16, 332, 23);
 		panelEndTime.add(textEndTime);
 		
-		JPanel panelRemain = new JPanel();
-		panelRemain.setLayout(null);
-		panelRemain.setBorder(new TitledBorder(null, "Time Remain", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panelRemain.setBounds(19, 321, 344, 46);
-		frame.getContentPane().add(panelRemain);
+		JPanel panelRemaining = new JPanel();
+		panelRemaining.setLayout(null);
+		panelRemaining.setBorder(new TitledBorder(null, "Time Remaining", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelRemaining.setBounds(19, 321, 344, 46);
+		frame.getContentPane().add(panelRemaining);
 		
 		final JTextPane textRemain = new JTextPane();
 		textRemain.setEnabled(false);
 		textRemain.setEditable(false);
 		textRemain.setBounds(6, 16, 332, 23);
-		panelRemain.add(textRemain);
+		panelRemaining.add(textRemain);
 		
 		JPanel panelElapsed = new JPanel();
 		panelElapsed.setLayout(null);
@@ -197,7 +200,7 @@ public class Prototype {
 		
 		final Task task = new Task() {	
 			boolean isDone;
-			
+						
 			@Override
 			public void run() {
 				isDone = false;
@@ -207,12 +210,14 @@ public class Prototype {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					
+			
+					//alterar para temp values
 					func.updateTimeElapsed(true, updateSeconds);
 					textElapsed.setText(Util.printTime(func.getTimeSheet().getTimeElapsed(), "%sh %sm %ss"));
-					
+				
 					func.updateTimeRemain(true, updateSeconds);
 					textRemain.setText(Util.printTime(func.getTimeSheet().getTimeRemain(), "%sh %sm %ss"));		
+				
 				}				
 			}
 			
@@ -228,35 +233,42 @@ public class Prototype {
 		final JButton buttonFinalTime = new JButton("Final Time");
 		
 		final JButton btnNow =  new JButton("Now");;
-		final JButton btnCuston = new JButton("Custon");;
+		final JButton btnCustom = new JButton("Custom");;
 		
 		
 		buttonFinalTime.setEnabled(false);
 		buttonFinalTime.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				btnNow.setVisible(true);
-				btnCuston.setVisible(true);									
+				btnCustom.setVisible(true);									
 			}
 		});
 		buttonFinalTime.setBounds(232, 11, 89, 23);
 		frame.getContentPane().add(buttonFinalTime);
 		
 		
-		btnCuston.addActionListener(new ActionListener() {
+		//Custom
+		btnCustom.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				CustonTime custon = new CustonTime();
-				
-				
+				CustomTime custon = new CustomTime();
+								
 				if(!custon.showDialog()){
 					return;
 				}
 				
-				Date custonTime = custon.getCustonDate();
-				System.out.println(custonTime);
+				Date custonTime = custon.getCustonDate();			
 				
 				if(buttonFinalTime.isEnabled()){
+					
+					//Regra de negocio
+					if(custonTime.getTime() < func.getTempTimePack().getStart()){
+						JOptionPane.showMessageDialog(null, "O tempo final não pode ser inferiror ao inicial", "Erro de tempo", JOptionPane.WARNING_MESSAGE);
+						return;						
+					}					
+					
 					func.setFinalTime(custonTime);					
 					
+					// TODO Migrar thread para temp
 					try {
 						task.cancel();
 						updateThread.join();
@@ -270,12 +282,11 @@ public class Prototype {
 					buttonInitialTime.setEnabled(true);
 					buttonFinalTime.setEnabled(false);
 					
-					//Adicionando tempTimePack ao TimeSheet History
-					func.getTimeSheet().getTimePacks().add(func.getTempTimePack());
-					
+					//TODO alterar para core
 					func.updateTimeElapsed(false, 0);
 					textElapsed.setText(Util.printTime(func.getTimeSheet().getTimeElapsed(), "%sh %sm %ss"));
 					
+					//TODO alterar para core
 					func.updateTimeRemain(false, 0);
 					textRemain.setText(Util.printTime(func.getTimeSheet().getTimeRemain(), "%sh %sm %ss"));
 					
@@ -286,12 +297,16 @@ public class Prototype {
 					
 				}else if(buttonInitialTime.isEnabled()){
 					func.setInitialTime(custonTime);
+										
+					// se o valor é custon, o time elapsed deve ser calculado antes.
+//					func.getTimeSheet().setTimeElapsed(new Date().getTime() - func.getTempTimePack().getStart());
+					// alem disso o valor do time remaining tambem deve ser atualizado.
+//					func.getTimeSheet().setTimeRemain(func.getTimePerDay() - func.getTimeSheet().getTimeElapsed());
 					
-					updateThread = new Thread(task);
+					updateThread = new Thread(task);					
 					updateThread.start();
 					
-					long time = func.getTempTimePack().getStart();
-					
+					long time = func.getTempTimePack().getStart();					
 					textStartTime.setText(func.toDate(time).toString());
 					
 					long predictedTime = func.getTimeSheet().getTimePredicted();
@@ -299,18 +314,23 @@ public class Prototype {
 							
 					buttonInitialTime.setEnabled(false);
 					buttonFinalTime.setEnabled(true);	
+					
+					textEndTime.setText("");
 				}
 								
 				
 				btnNow.setVisible(false);
-				btnCuston.setVisible(false);
+				btnCustom.setVisible(false);
 				
 			}
 		});
-		btnCuston.setVisible(false);
-		btnCuston.setBounds(185, 48, 89, 23);
-		frame.getContentPane().add(btnCuston);
 		
+		btnCustom.setVisible(false);
+		btnCustom.setBounds(185, 48, 89, 23);
+		frame.getContentPane().add(btnCustom);
+		
+		
+		//Now
 		btnNow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {				
 				if(buttonFinalTime.isEnabled()){
@@ -328,9 +348,6 @@ public class Prototype {
 									
 					buttonInitialTime.setEnabled(true);
 					buttonFinalTime.setEnabled(false);
-					
-					//Adicionando tempTimePack ao TimeSheet History
-					func.getTimeSheet().getTimePacks().add(func.getTempTimePack());
 					
 					func.updateTimeElapsed(false, 0);
 					textElapsed.setText(Util.printTime(func.getTimeSheet().getTimeElapsed(), "%sh %sm %ss"));
@@ -356,11 +373,13 @@ public class Prototype {
 					textPredicted.setText(func.toDate(predictedTime).toString());			
 								
 					buttonInitialTime.setEnabled(false);
-					buttonFinalTime.setEnabled(true);	
+					buttonFinalTime.setEnabled(true);
+					
+					textEndTime.setText("");
 				}				
 				
 				btnNow.setVisible(false);
-				btnCuston.setVisible(false);
+				btnCustom.setVisible(false);
 			}
 		});
 		btnNow.setVisible(false);
@@ -371,7 +390,7 @@ public class Prototype {
 		buttonInitialTime.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnNow.setVisible(true);
-				btnCuston.setVisible(true);
+				btnCustom.setVisible(true);
 				
 				txtSession.setText("Session sequence: "+ (func.getTimeSheet().getTimePacks().size()+1));	
 								
@@ -406,7 +425,7 @@ public class Prototype {
 				textTimeBase.setText(Util.printTime(func.getTimePerDay(), "%sh %sm %ss"));
 				
 				btnNow.setVisible(false);
-				btnCuston.setVisible(false);
+				btnCustom.setVisible(false);
 				
 				textPane.setText("New TimeSheet Created.");
 				buttonInitialTime.setEnabled(true);				
@@ -416,6 +435,7 @@ public class Prototype {
 				textRemain.setText("");
 				textElapsed.setText("");
 				textPredicted.setText("");
+				txtSession.setText("Session not initialized.");
 			}
 		});
 		buttonTimeSheet.setBounds(10, 11, 112, 23);

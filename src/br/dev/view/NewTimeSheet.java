@@ -154,7 +154,6 @@ public class NewTimeSheet{
 				
 				try {
 					timeBase = sdf.parse(String.format("%s:%s:%s", textTimeHour.getText(), textTimeMinute.getText(), textTimeSeconds.getText()));
-					System.out.println(timeBase);
 					
 					Date dateZero = sdf.parse("00:00:00");					
 					timeDay = Util.convertTime(timeBase.getTime() - dateZero.getTime());

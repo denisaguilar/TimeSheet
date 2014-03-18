@@ -9,10 +9,6 @@ public class Util {
 	private static long hour = (60 * 60 * 1000);
 	private static long day = (24 * 60 * 60 * 1000);
 
-	public static Date getTime(){
-		return new Date();		
-	}
-	
 	public static String printTime(long timeMilli, String format){
 		long diffSeconds = getSeconds(timeMilli);
 		long diffMinutes = getMinuts(timeMilli);

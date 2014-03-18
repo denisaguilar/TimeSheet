@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
+
 
 public class Function {
 	
@@ -18,6 +20,7 @@ public class Function {
 
 	public void setTimePerDay(long timePerDay) {
 		this.timePerDay = timePerDay;
+		timeSheet.setTimeRemain(getTimePerDay());
 	}
 
 	public TimeSheet getTimeSheet() {
@@ -29,18 +32,22 @@ public class Function {
 	}
 
 	public Function() {
-		timePerDay  = Util.toHours(8);
-		timeSheet = TimeSheet.getInstance(timePerDay);
+		timeSheet = TimeSheet.getInstance();
 		tempTimePack = new TimePack();		
 	}
 	
 	public void setInitialTime(Date date){
 		tempTimePack = new TimePack();
 		
-		if(date == null)
-			tempTimePack.setStart(Util.getTime().getTime());
-		else
+		//adicionado tratamento para customTime
+		if(date == null){
+			tempTimePack.setStart(new Date().getTime());
+		}else{
 			tempTimePack.setStart(date.getTime());
+			
+			timeSheet.setTimeElapsed(new Date().getTime() - tempTimePack.getStart());
+			timeSheet.setTimeRemain(timePerDay - timeSheet.getTimeElapsed());
+		}
 		
 		long predicted = tempTimePack.getStart() + timeSheet.getTimeRemain();
 		
@@ -48,14 +55,19 @@ public class Function {
 	}
 	
 	public void setFinalTime(Date date){
+			
+		//adicionado tratamento para customTime
 		if(date ==  null)
-			tempTimePack.setEnd(Util.getTime().getTime());
+			tempTimePack.setEnd(new Date().getTime());
 		else
 			tempTimePack.setEnd(date.getTime());
+				
+		timeSheet.getTimePacks().add(getTempTimePack());
 	}	
 	
 	
 	public void updateTimeElapsed(boolean update, int updateFrequence){
+		
 		long diff = 0;
 		if(update)
 			diff = getTimeSheet().getTimeElapsed() + Util.toSeconds(updateFrequence);

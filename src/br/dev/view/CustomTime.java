@@ -13,12 +13,13 @@ import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import br.dev.func.Util;
 
-public class CustonTime {
+public class CustomTime {
 
 	
 	private Date custonDate;
@@ -35,7 +36,7 @@ public class CustonTime {
 		return custonDate;
 	}
 	
-	public CustonTime() {
+	public CustomTime() {
 	}
 
 	/**
@@ -90,8 +91,12 @@ public class CustonTime {
 				
 				custonDate = cal.getTime();		
 				
-				dialog.setVisible(false);
-				isDone = true;
+				if(custonDate.getTime() > new Date().getTime()){
+					JOptionPane.showMessageDialog(null, "A data não pode ser maior do que o tempo atual", "Erro de tempo", JOptionPane.WARNING_MESSAGE);
+				}else{
+					dialog.setVisible(false);
+					isDone = true;
+				}
 			}
 		});
 		btnOk.setBounds(207, 94, 89, 23);
@@ -118,7 +123,7 @@ public class CustonTime {
 		lblSecond.setBounds(231, 55, 46, 14);
 		dialog.getContentPane().add(lblSecond);
 		
-		JLabel lblSetCustonTime = new JLabel("Set custon Time");
+		JLabel lblSetCustonTime = new JLabel("Set custom Time");
 		lblSetCustonTime.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblSetCustonTime.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSetCustonTime.setBounds(23, 11, 254, 14);

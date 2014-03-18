@@ -37,9 +37,8 @@ public class TimeSheet {
 		this.timePacks = timePacks;
 	}
 	
-	public static TimeSheet getInstance(long timeRemain){
+	public static TimeSheet getInstance(){
 		TimeSheet ts = new TimeSheet();	
-		ts.timeRemain = timeRemain;
 		return ts; 	
 	}
 	
