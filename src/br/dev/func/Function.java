@@ -38,18 +38,23 @@ public class Function {
 	
 	public void setInitialTime(Date date){
 		tempTimePack = new TimePack();
+		long predicted;
 		
 		//adicionado tratamento para customTime
 		if(date == null){
 			tempTimePack.setStart(new Date().getTime());
+			predicted = tempTimePack.getStart() + timeSheet.getTimeRemain();
 		}else{
 			tempTimePack.setStart(date.getTime());
+			
+			predicted = tempTimePack.getStart() + timeSheet.getTimeRemain();
 			
 			timeSheet.setTimeElapsed(new Date().getTime() - tempTimePack.getStart());
 			timeSheet.setTimeRemain(timePerDay - timeSheet.getTimeElapsed());
 		}
+				
 		
-		long predicted = tempTimePack.getStart() + timeSheet.getTimeRemain();
+		
 		
 		timeSheet.setTimePredicted(predicted);
 	}
