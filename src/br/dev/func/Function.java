@@ -4,8 +4,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
-
 
 public class Function {
 	
@@ -49,14 +47,29 @@ public class Function {
 			
 			predicted = tempTimePack.getStart() + timeSheet.getTimeRemain();
 			
-			timeSheet.setTimeElapsed(new Date().getTime() - tempTimePack.getStart());
-			timeSheet.setTimeRemain(timePerDay - timeSheet.getTimeElapsed());
-		}
+			//Caso seja a primeira execução em CustomTime o timeElapsed é definido por (TempoAtual - TempoInicial)
+			if(timeSheet.getTimePacks().isEmpty())
+				timeSheet.setTimeElapsed(new Date().getTime() - tempTimePack.getStart());
+			else
+				// Caso já existam sessions armazenadas, o tempo inicial deve ser medido por ((TempoAtual - TempoInicial) + TotalTimeElapsed)
+				timeSheet.setTimeElapsed((new Date().getTime() - tempTimePack.getStart()) + getTotalTimeElapsed());
 				
-		
-		
+			//Atualizando o timRemaminig
+			timeSheet.setTimeRemain(timePerDay - timeSheet.getTimeElapsed());
+		}	
 		
 		timeSheet.setTimePredicted(predicted);
+	}
+	
+	private long getTotalTimeElapsed(){
+		long time = 0;
+		
+		for (TimePack tp : timeSheet.getTimePacks()) {
+			time += tp.getInterval();
+		}
+		
+		return time;
+		
 	}
 	
 	public void setFinalTime(Date date){
@@ -77,9 +90,7 @@ public class Function {
 		if(update)
 			diff = getTimeSheet().getTimeElapsed() + Util.toSeconds(updateFrequence);
 		else{
-			for (TimePack tp : getTimeSheet().getTimePacks()) {
-				diff += tp.getInterval();				
-			}
+			diff = getTotalTimeElapsed();
 		}
 		
 		timeSheet.setTimeElapsed(diff);
