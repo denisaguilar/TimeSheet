@@ -173,7 +173,7 @@ public class NewTimeSheet{
 				
 			}
 		});
-		btnSave.setBounds(218, 137, 89, 23);
+		btnSave.setBounds(119, 137, 89, 23);
 		dialog.getContentPane().add(btnSave);
 		
 		JButton btnCancel = new JButton("Cancel");
@@ -182,7 +182,7 @@ public class NewTimeSheet{
 				dialog.setVisible(false);
 			}
 		});
-		btnCancel.setBounds(119, 137, 89, 23);
+		btnCancel.setBounds(218, 137, 89, 23);
 		dialog.getContentPane().add(btnCancel);			
 		
 		dialog.setVisible(true);
