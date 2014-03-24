@@ -3,6 +3,7 @@ package br.dev.view;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.ParseException;
@@ -16,13 +17,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import br.dev.func.Util;
 
 public class CustomTime {
 
 	
-	private Date custonDate;
+	private Date customDate;
 	private boolean isDone;
 	JDialog dialog;
 	private JTextField textMinute;
@@ -32,8 +34,8 @@ public class CustomTime {
 	 * Create the application.
 	 */
 	
-	public Date getCustonDate(){
-		return custonDate;
+	public Date getCustomDate(){
+		return customDate;
 	}
 	
 	public CustomTime() {
@@ -66,18 +68,51 @@ public class CustomTime {
 		textMinute.setBounds(105, 52, 34, 20);
 		textMinute.setText(String.valueOf(Util.getMinuts(time)));
 		dialog.getContentPane().add(textMinute);
+		// text will be selected when field gains focus
+		textMinute.addFocusListener(new java.awt.event.FocusAdapter() {
+			public void focusGained(FocusEvent evt) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						textMinute.selectAll();
+					}
+				});
+			}
+		});
 		textMinute.setColumns(2);
 		
 		textSecond = new JTextField();
 		textSecond.setColumns(2);
 		textSecond.setBounds(190, 52, 34, 20);
-		textSecond.setText(String.valueOf(Util.getSeconds(time)));
+		textSecond.setText("00");
+		// text will be selected when field gains focus
+		textSecond.addFocusListener(new java.awt.event.FocusAdapter() {
+			public void focusGained(FocusEvent evt) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						textSecond.selectAll();
+					}
+				});
+			}
+		});
 		dialog.getContentPane().add(textSecond);
 		
 		textHour = new JTextField();
 		textHour.setColumns(2);
 		textHour.setBounds(23, 52, 34, 20);
 		textHour.setText(String.valueOf(Util.getHours(time)));
+		// text will be selected when field gains focus
+		textHour.addFocusListener(new java.awt.event.FocusAdapter() {
+			public void focusGained(FocusEvent evt) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						textHour.selectAll();
+					}
+				});
+			}
+		});
 		dialog.getContentPane().add(textHour);
 		
 		JButton btnOk = new JButton("Ok");
@@ -89,9 +124,9 @@ public class CustomTime {
 				cal.set(Calendar.MINUTE, Integer.parseInt(textMinute.getText()));
 				cal.set(Calendar.SECOND, Integer.parseInt(textSecond.getText()));
 				
-				custonDate = cal.getTime();		
+				customDate = cal.getTime();		
 				
-				if(custonDate.getTime() > new Date().getTime()){
+				if(customDate.getTime() > new Date().getTime()){
 					JOptionPane.showMessageDialog(null, "A data não pode ser maior do que o tempo atual", "Erro de tempo", JOptionPane.WARNING_MESSAGE);
 				}else{
 					dialog.setVisible(false);
