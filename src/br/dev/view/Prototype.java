@@ -256,17 +256,17 @@ public class Prototype {
 					return;
 				}
 				
-				Date custonTime = custon.getCustonDate();			
+				Date customTime = custon.getCustomDate();			
 				
 				if(buttonFinalTime.isEnabled()){
 					
 					//Regra de negocio
-					if(custonTime.getTime() < func.getTempTimePack().getStart()){
+					if(customTime.getTime() < func.getTempTimePack().getStart()){
 						JOptionPane.showMessageDialog(null, "O tempo final não pode ser inferiror ao inicial", "Erro de tempo", JOptionPane.WARNING_MESSAGE);
 						return;						
 					}					
 					
-					func.setFinalTime(custonTime);					
+					func.setFinalTime(customTime);					
 					
 					// TODO Migrar thread para temp
 					try {
@@ -296,7 +296,7 @@ public class Prototype {
 					buttonFinalTime.setEnabled(false);	
 					
 				}else if(buttonInitialTime.isEnabled()){
-					func.setInitialTime(custonTime);
+					func.setInitialTime(customTime);
 										
 					// se o valor é custon, o time elapsed deve ser calculado antes.
 //					func.getTimeSheet().setTimeElapsed(new Date().getTime() - func.getTempTimePack().getStart());
