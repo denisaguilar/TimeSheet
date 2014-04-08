@@ -23,10 +23,9 @@ import javax.swing.border.TitledBorder;
 
 import br.dev.func.Function;
 import br.dev.func.Util;
-import br.dev.view.CustomTime;
-import br.dev.view.NewTimeSheet;
 
 import com.sun.jmx.snmp.tasks.Task;
+import java.awt.Toolkit;
 
 public class Prototype {
 
@@ -66,14 +65,20 @@ public class Prototype {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		String osInfo = System.getProperty("os.name");
+		
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			if(osInfo.toLowerCase().contains("windows"))
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			else
+				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException
 				| IllegalAccessException | UnsupportedLookAndFeelException e1) {
 			e1.printStackTrace();
 		}
 		
 		frame = new JFrame();
+		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Prototype.class.getResource("/javax/swing/plaf/metal/icons/ocean/computer.gif")));
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 744, 578);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -147,7 +152,7 @@ public class Prototype {
 		textEndTime.setBounds(6, 16, 332, 23);
 		panelEndTime.add(textEndTime);
 		
-		JPanel panelRemaining = new JPanel();
+		final JPanel panelRemaining = new JPanel();
 		panelRemaining.setLayout(null);
 		panelRemaining.setBorder(new TitledBorder(null, "Time Remaining", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelRemaining.setBounds(19, 321, 344, 46);
@@ -193,7 +198,7 @@ public class Prototype {
 		final JLabel textTimeBase = new JLabel();
 		textTimeBase.setEnabled(false);
 		textTimeBase.setText("0h 0m 0s");
-		textTimeBase.setBounds(77, 177, 76, 20);
+		textTimeBase.setBounds(90, 178, 76, 20);
 		frame.getContentPane().add(textTimeBase);
 		
 		
@@ -211,13 +216,22 @@ public class Prototype {
 						e.printStackTrace();
 					}
 			
+//					long timeElapsed = func.getTimeSheet().getTimeElapsed();
+//					long timeRemain = func.getTimeSheet().getTimeRemain();
+//					
+//					textPane.setText("> : "+ (timeRemain < 0));
+//					
+//					if(timeRemain <= 0){
+//						
+//					}					
+						
 					//alterar para temp values
 					func.updateTimeElapsed(true, updateSeconds);
 					textElapsed.setText(Util.printTime(func.getTimeSheet().getTimeElapsed(), "%sh %sm %ss"));
 				
 					func.updateTimeRemain(true, updateSeconds);
 					textRemain.setText(Util.printTime(func.getTimeSheet().getTimeRemain(), "%sh %sm %ss"));		
-				
+									
 				}				
 			}
 			
@@ -229,8 +243,8 @@ public class Prototype {
 		
 		
 		
-		final JButton buttonInitialTime = new JButton("Initial Time");
-		final JButton buttonFinalTime = new JButton("Final Time");
+		final JButton buttonInitialTime = new JButton("Check-in");
+		final JButton buttonFinalTime = new JButton("Checkout");
 		
 		final JButton btnNow =  new JButton("Now");;
 		final JButton btnCustom = new JButton("Custom");;
@@ -444,40 +458,25 @@ public class Prototype {
 		
 		
 		
-		JLabel lblTimeBase = new JLabel("Time Base");
-		lblTimeBase.setBounds(19, 177, 76, 20);
+		JLabel lblTimeBase = new JLabel("Work Time");
+		lblTimeBase.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblTimeBase.setBounds(22, 178, 76, 20);
 		frame.getContentPane().add(lblTimeBase);
-		
-		JButton btnUpdate = new JButton("Update");
-		btnUpdate.setEnabled(false);
-		btnUpdate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {								
-				func.updateTimeElapsed(true, 0);
-				textElapsed.setText(Util.printTime(func.getTimeSheet().getTimeElapsed(), "%sh %sm %ss"));
-				
-				func.updateTimeRemain(true, 0);
-				textRemain.setText(Util.printTime(func.getTimeSheet().getTimeRemain(), "%sh %sm %ss"));
-				
-			}
-		});
-		btnUpdate.setBounds(249, 174, 89, 23);
-		frame.getContentPane().add(btnUpdate);	
 		
 				
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
-		JMenu mnNewMenu = new JMenu("Home");
-		menuBar.add(mnNewMenu);
+		JMenu mnInfo = new JMenu("Info");
+		menuBar.add(mnInfo);
 		
-		JMenuItem menuItemSetTime = new JMenuItem("Config");
-		menuItemSetTime.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-			
-				
+		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textPane.setText("\n\n TimeSheet 2014 - Version 0.3.4 \n\n Source: https://github.com/denisaguilar/TimeSheet/releases");
 			}
 		});
-		mnNewMenu.add(menuItemSetTime);
+		mnInfo.add(mntmAbout);
 		
 	}
 	

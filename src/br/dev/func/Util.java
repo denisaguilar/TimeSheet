@@ -1,6 +1,5 @@
 package br.dev.func;
 
-import java.util.Date;
 
 public class Util {
 	
