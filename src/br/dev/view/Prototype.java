@@ -3,6 +3,7 @@ package br.dev.view;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Label;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
@@ -23,13 +24,14 @@ import javax.swing.border.TitledBorder;
 
 import br.dev.func.Function;
 import br.dev.func.Util;
+import br.dev.view.CustomTime;
+import br.dev.view.NewTimeSheet;
 
 import com.sun.jmx.snmp.tasks.Task;
-import java.awt.Toolkit;
 
 public class Prototype {
 
-	private JFrame frame;
+	private JFrame frmTimesheet;
 	
 	private static int updateSeconds = 1;
 	private static int clockUpdateInterval = 5;
@@ -46,7 +48,7 @@ public class Prototype {
 			public void run() {
 				try {
 					Prototype window = new Prototype();
-					window.frame.setVisible(true);
+					window.frmTimesheet.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -77,28 +79,30 @@ public class Prototype {
 			e1.printStackTrace();
 		}
 		
-		frame = new JFrame();
-		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Prototype.class.getResource("/javax/swing/plaf/metal/icons/ocean/computer.gif")));
-		frame.setResizable(false);
-		frame.setBounds(100, 100, 744, 578);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frmTimesheet = new JFrame();
+		frmTimesheet.setTitle("TimeSheet");
+		frmTimesheet.setIconImage(Toolkit.getDefaultToolkit().getImage(Prototype.class.getResource("/javax/swing/plaf/metal/icons/ocean/computer.gif")));
+		frmTimesheet.setResizable(false);
+		frmTimesheet.setBounds(100, 100, 744, 578);
+		frmTimesheet.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmTimesheet.getContentPane().setLayout(null);
+		frmTimesheet.setLocationRelativeTo(null);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Console", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel.setBounds(373, 11, 344, 496);
-		frame.getContentPane().add(panel);
+		frmTimesheet.getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Now", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setBounds(55, 82, 254, 76);
-		frame.getContentPane().add(panel_1);
+		panel_1.setBounds(19, 45, 344, 121);
+		frmTimesheet.getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 				
 		final Label textHour = new Label();
 		textHour.setAlignment(Label.CENTER);
-		textHour.setBounds(6, 16, 242, 53);
+		textHour.setBounds(6, 16, 328, 95);
 		panel_1.add(textHour);
 		textHour.setFont(new Font("Tahoma", Font.BOLD, 25));
 		textHour.setEnabled(false);
@@ -131,7 +135,7 @@ public class Prototype {
 		JPanel panelStartTime = new JPanel();
 		panelStartTime.setBorder(new TitledBorder(null, "Start Time", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelStartTime.setBounds(19, 208, 344, 46);
-		frame.getContentPane().add(panelStartTime);
+		frmTimesheet.getContentPane().add(panelStartTime);
 		panelStartTime.setLayout(null);
 		
 		final JTextPane textStartTime = new JTextPane();
@@ -144,7 +148,7 @@ public class Prototype {
 		panelEndTime.setLayout(null);
 		panelEndTime.setBorder(new TitledBorder(null, "End Time", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelEndTime.setBounds(19, 264, 344, 46);
-		frame.getContentPane().add(panelEndTime);
+		frmTimesheet.getContentPane().add(panelEndTime);
 		
 		final JTextPane textEndTime = new JTextPane();
 		textEndTime.setEnabled(false);
@@ -152,11 +156,11 @@ public class Prototype {
 		textEndTime.setBounds(6, 16, 332, 23);
 		panelEndTime.add(textEndTime);
 		
-		final JPanel panelRemaining = new JPanel();
+		JPanel panelRemaining = new JPanel();
 		panelRemaining.setLayout(null);
 		panelRemaining.setBorder(new TitledBorder(null, "Time Remaining", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelRemaining.setBounds(19, 321, 344, 46);
-		frame.getContentPane().add(panelRemaining);
+		frmTimesheet.getContentPane().add(panelRemaining);
 		
 		final JTextPane textRemain = new JTextPane();
 		textRemain.setEnabled(false);
@@ -168,7 +172,7 @@ public class Prototype {
 		panelElapsed.setLayout(null);
 		panelElapsed.setBorder(new TitledBorder(null, "Time Elapsed", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelElapsed.setBounds(19, 378, 344, 46);
-		frame.getContentPane().add(panelElapsed);
+		frmTimesheet.getContentPane().add(panelElapsed);
 		
 		final JTextPane textElapsed = new JTextPane();
 		textElapsed.setEnabled(false);
@@ -180,7 +184,7 @@ public class Prototype {
 		panelPredicted.setLayout(null);
 		panelPredicted.setBorder(new TitledBorder(null, "Time Predicted", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panelPredicted.setBounds(19, 435, 344, 46);
-		frame.getContentPane().add(panelPredicted);
+		frmTimesheet.getContentPane().add(panelPredicted);
 		
 		final JTextPane textPredicted = new JTextPane();
 		textPredicted.setEnabled(false);
@@ -193,13 +197,13 @@ public class Prototype {
 		txtSession.setEnabled(false);
 		txtSession.setEditable(false);
 		txtSession.setBounds(19, 487, 344, 20);
-		frame.getContentPane().add(txtSession);
+		frmTimesheet.getContentPane().add(txtSession);
 		
 		final JLabel textTimeBase = new JLabel();
 		textTimeBase.setEnabled(false);
 		textTimeBase.setText("0h 0m 0s");
-		textTimeBase.setBounds(90, 178, 76, 20);
-		frame.getContentPane().add(textTimeBase);
+		textTimeBase.setBounds(77, 177, 76, 20);
+		frmTimesheet.getContentPane().add(textTimeBase);
 		
 		
 		
@@ -216,22 +220,13 @@ public class Prototype {
 						e.printStackTrace();
 					}
 			
-//					long timeElapsed = func.getTimeSheet().getTimeElapsed();
-//					long timeRemain = func.getTimeSheet().getTimeRemain();
-//					
-//					textPane.setText("> : "+ (timeRemain < 0));
-//					
-//					if(timeRemain <= 0){
-//						
-//					}					
-						
 					//alterar para temp values
 					func.updateTimeElapsed(true, updateSeconds);
 					textElapsed.setText(Util.printTime(func.getTimeSheet().getTimeElapsed(), "%sh %sm %ss"));
 				
 					func.updateTimeRemain(true, updateSeconds);
 					textRemain.setText(Util.printTime(func.getTimeSheet().getTimeRemain(), "%sh %sm %ss"));		
-									
+				
 				}				
 			}
 			
@@ -243,29 +238,18 @@ public class Prototype {
 		
 		
 		
-		final JButton buttonInitialTime = new JButton("Check-in");
-		final JButton buttonFinalTime = new JButton("Checkout");
-		
-		final JButton btnNow =  new JButton("Now");;
-		final JButton btnCustom = new JButton("Custom");;
+		final JButton buttonInitialTime = new JButton("Initial Time");
+		final JButton buttonFinalTime = new JButton("Final Time");;;
 		
 		
 		buttonFinalTime.setEnabled(false);
 		buttonFinalTime.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				btnNow.setVisible(true);
-				btnCustom.setVisible(true);									
-			}
-		});
-		buttonFinalTime.setBounds(232, 11, 89, 23);
-		frame.getContentPane().add(buttonFinalTime);
-		
-		
-		//Custom
-		btnCustom.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+//				btnNow.setVisible(true);
+//				btnCustom.setVisible(true);				
+				
 				CustomTime custon = new CustomTime();
-								
+				
 				if(!custon.showDialog()){
 					return;
 				}
@@ -309,109 +293,53 @@ public class Prototype {
 					buttonInitialTime.setEnabled(true);
 					buttonFinalTime.setEnabled(false);	
 					
-				}else if(buttonInitialTime.isEnabled()){
-					func.setInitialTime(customTime);
-										
-					// se o valor é custon, o time elapsed deve ser calculado antes.
-//					func.getTimeSheet().setTimeElapsed(new Date().getTime() - func.getTempTimePack().getStart());
-					// alem disso o valor do time remaining tambem deve ser atualizado.
-//					func.getTimeSheet().setTimeRemain(func.getTimePerDay() - func.getTimeSheet().getTimeElapsed());
-					
-					updateThread = new Thread(task);					
-					updateThread.start();
-					
-					long time = func.getTempTimePack().getStart();					
-					textStartTime.setText(func.toDate(time).toString());
-					
-					long predictedTime = func.getTimeSheet().getTimePredicted();
-					textPredicted.setText(func.toDate(predictedTime).toString());					
-							
-					buttonInitialTime.setEnabled(false);
-					buttonFinalTime.setEnabled(true);	
-					
-					textEndTime.setText("");
 				}
-								
-				
-				btnNow.setVisible(false);
-				btnCustom.setVisible(false);
-				
 			}
 		});
-		
-		btnCustom.setVisible(false);
-		btnCustom.setBounds(185, 48, 89, 23);
-		frame.getContentPane().add(btnCustom);
-		
-		
-		//Now
-		btnNow.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {				
-				if(buttonFinalTime.isEnabled()){
-					func.setFinalTime(null);
-					
-					try {
-						task.cancel();
-						updateThread.join();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					
-					long time = func.getTempTimePack().getEnd();
-					textEndTime.setText(func.toDate(time).toString());
-									
-					buttonInitialTime.setEnabled(true);
-					buttonFinalTime.setEnabled(false);
-					
-					func.updateTimeElapsed(false, 0);
-					textElapsed.setText(Util.printTime(func.getTimeSheet().getTimeElapsed(), "%sh %sm %ss"));
-					
-					func.updateTimeRemain(false, 0);
-					textRemain.setText(Util.printTime(func.getTimeSheet().getTimeRemain(), "%sh %sm %ss"));
-					
-					updateConsole(textPane);
-					
-					buttonInitialTime.setEnabled(true);
-					buttonFinalTime.setEnabled(false);	
-				}else if(buttonInitialTime.isEnabled()){
-					func.setInitialTime(null);
-				
-					updateThread = new Thread(task);
-					updateThread.start();
-					
-					long time = func.getTempTimePack().getStart();
-					
-					textStartTime.setText(func.toDate(time).toString());
-					
-					long predictedTime = func.getTimeSheet().getTimePredicted();
-					textPredicted.setText(func.toDate(predictedTime).toString());			
-								
-					buttonInitialTime.setEnabled(false);
-					buttonFinalTime.setEnabled(true);
-					
-					textEndTime.setText("");
-				}				
-				
-				btnNow.setVisible(false);
-				btnCustom.setVisible(false);
-			}
-		});
-		btnNow.setVisible(false);
-		btnNow.setBounds(86, 48, 89, 23);
-		frame.getContentPane().add(btnNow);
+		buttonFinalTime.setBounds(274, 11, 89, 23);
+		frmTimesheet.getContentPane().add(buttonFinalTime);
 		
 		buttonInitialTime.setEnabled(false);
 		buttonInitialTime.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				btnNow.setVisible(true);
-				btnCustom.setVisible(true);
+//				btnNow.setVisible(true);
+//				btnCustom.setVisible(true);
+				
+				CustomTime custon = new CustomTime();
+				
+				if(!custon.showDialog()){
+					return;
+				}
+				
+				Date customTime = custon.getCustomDate();	
+				
+				func.setInitialTime(customTime);
+				
+				// se o valor é custon, o time elapsed deve ser calculado antes.
+//				func.getTimeSheet().setTimeElapsed(new Date().getTime() - func.getTempTimePack().getStart());
+				// alem disso o valor do time remaining tambem deve ser atualizado.
+//				func.getTimeSheet().setTimeRemain(func.getTimePerDay() - func.getTimeSheet().getTimeElapsed());
+				
+				updateThread = new Thread(task);					
+				updateThread.start();
+				
+				long time = func.getTempTimePack().getStart();					
+				textStartTime.setText(func.toDate(time).toString());
+				
+				long predictedTime = func.getTimeSheet().getTimePredicted();
+				textPredicted.setText(func.toDate(predictedTime).toString());					
+						
+				buttonInitialTime.setEnabled(false);
+				buttonFinalTime.setEnabled(true);	
+				
+				textEndTime.setText("");
 				
 				txtSession.setText("Session sequence: "+ (func.getTimeSheet().getTimePacks().size()+1));	
 								
 			}
 		});
-		buttonInitialTime.setBounds(132, 11, 89, 23);
-		frame.getContentPane().add(buttonInitialTime);
+		buttonInitialTime.setBounds(175, 11, 89, 23);
+		frmTimesheet.getContentPane().add(buttonInitialTime);
 		
 		JButton buttonTimeSheet = new JButton("New TimeSheet");
 		buttonTimeSheet.addActionListener(new ActionListener() {
@@ -438,9 +366,6 @@ public class Prototype {
 				func.setTimePerDay(setTime.getTimePerDay());
 				textTimeBase.setText(Util.printTime(func.getTimePerDay(), "%sh %sm %ss"));
 				
-				btnNow.setVisible(false);
-				btnCustom.setVisible(false);
-				
 				textPane.setText("New TimeSheet Created.");
 				buttonInitialTime.setEnabled(true);				
 				
@@ -452,20 +377,19 @@ public class Prototype {
 				txtSession.setText("Session not initialized.");
 			}
 		});
-		buttonTimeSheet.setBounds(10, 11, 112, 23);
-		frame.getContentPane().add(buttonTimeSheet);
+		buttonTimeSheet.setBounds(19, 11, 112, 23);
+		frmTimesheet.getContentPane().add(buttonTimeSheet);
 		
 		
 		
 		
 		JLabel lblTimeBase = new JLabel("Work Time");
-		lblTimeBase.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblTimeBase.setBounds(22, 178, 76, 20);
-		frame.getContentPane().add(lblTimeBase);
+		lblTimeBase.setBounds(23, 177, 76, 20);
+		frmTimesheet.getContentPane().add(lblTimeBase);
 		
 				
 		JMenuBar menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
+		frmTimesheet.setJMenuBar(menuBar);
 		
 		JMenu mnInfo = new JMenu("Info");
 		menuBar.add(mnInfo);
