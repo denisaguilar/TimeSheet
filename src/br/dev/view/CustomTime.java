@@ -61,8 +61,10 @@ public class CustomTime {
 		
 				
 		dialog = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
+		dialog.setResizable(false);
 		dialog.setBounds(100, 100, 326, 170);
 		dialog.getContentPane().setLayout(null);
+		dialog.setLocationRelativeTo(null);
 				
 		textMinute = new JTextField();
 		textMinute.setBounds(105, 52, 34, 20);
