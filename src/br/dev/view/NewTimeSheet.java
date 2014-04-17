@@ -15,8 +15,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import br.dev.func.Util;
+
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class NewTimeSheet{
 
@@ -75,7 +79,8 @@ public class NewTimeSheet{
 		this.clockUpdateSecods = clockUpdate;
 		
 		dialog.setBounds(100, 100, 342, 213);
-		dialog.getContentPane().setLayout(null);		
+		dialog.getContentPane().setLayout(null);
+		dialog.setLocationRelativeTo(null);
 		
 		JLabel lblH = new JLabel("H");
 		lblH.setBounds(213, 42, 29, 14);
@@ -102,6 +107,17 @@ public class NewTimeSheet{
 		dialog.getContentPane().add(lblNewLabel_1);
 		
 		textTimeHour = new JTextField();
+		textTimeHour.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						textTimeHour.selectAll();
+					}
+				});
+			}
+		});
 		textTimeHour.setHorizontalAlignment(SwingConstants.CENTER);
 		textTimeHour.setBounds(181, 38, 29, 20);
 		textTimeHour.setText("08");
@@ -109,6 +125,17 @@ public class NewTimeSheet{
 		textTimeHour.setColumns(2);
 		
 		textTimeMinute = new JTextField();
+		textTimeMinute.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						textTimeMinute.selectAll();
+					}
+				});
+			}
+		});
 		textTimeMinute.setHorizontalAlignment(SwingConstants.CENTER);
 		textTimeMinute.setColumns(2);
 		textTimeMinute.setBounds(223, 38, 29, 20);
@@ -116,6 +143,17 @@ public class NewTimeSheet{
 		dialog.getContentPane().add(textTimeMinute);
 		
 		textTimeSeconds = new JTextField();
+		textTimeSeconds.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						textTimeSeconds.selectAll();
+					}
+				});
+			}
+		});
 		textTimeSeconds.setHorizontalAlignment(SwingConstants.CENTER);
 		textTimeSeconds.setColumns(2);
 		textTimeSeconds.setBounds(269, 38, 29, 20);
