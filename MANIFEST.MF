@@ -1,5 +1,0 @@
-Manifest-Version: 0.1
-Sealed: true
-Specification-Title: TimeSheet
-Specification-Version: 0.3.4
-Specification-Vendor: Colaborative

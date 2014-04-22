@@ -24,8 +24,6 @@ import javax.swing.border.TitledBorder;
 
 import br.dev.func.Function;
 import br.dev.func.Util;
-import br.dev.view.CustomTime;
-import br.dev.view.NewTimeSheet;
 
 import com.sun.jmx.snmp.tasks.Task;
 
@@ -80,7 +78,7 @@ public class Prototype {
 		}
 		
 		frmTimesheet = new JFrame();
-		frmTimesheet.setTitle("TimeSheet");
+		frmTimesheet.setTitle("TimeSheet "+Util.getVersion());
 		frmTimesheet.setIconImage(Toolkit.getDefaultToolkit().getImage(Prototype.class.getResource("/javax/swing/plaf/metal/icons/ocean/computer.gif")));
 		frmTimesheet.setResizable(false);
 		frmTimesheet.setBounds(100, 100, 744, 578);
@@ -238,8 +236,8 @@ public class Prototype {
 		
 		
 		
-		final JButton buttonInitialTime = new JButton("Initial Time");
-		final JButton buttonFinalTime = new JButton("Final Time");;;
+		final JButton buttonInitialTime = new JButton("Check-in");
+		final JButton buttonFinalTime = new JButton("Check out ");;;
 		
 		
 		buttonFinalTime.setEnabled(false);
@@ -379,10 +377,7 @@ public class Prototype {
 		});
 		buttonTimeSheet.setBounds(19, 11, 112, 23);
 		frmTimesheet.getContentPane().add(buttonTimeSheet);
-		
-		
-		
-		
+				
 		JLabel lblTimeBase = new JLabel("Work Time");
 		lblTimeBase.setBounds(23, 177, 76, 20);
 		frmTimesheet.getContentPane().add(lblTimeBase);
@@ -400,8 +395,22 @@ public class Prototype {
 				textPane.setText("\n\n TimeSheet 2014 - Version 0.3.4 \n\n Source: https://github.com/denisaguilar/TimeSheet/releases");
 			}
 		});
-		mnInfo.add(mntmAbout);
 		
+		JMenuItem mntmVerifyUpdates = new JMenuItem("Check for updates");
+		mntmVerifyUpdates.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CheckUpdates check = new CheckUpdates();
+				
+				if(!check.showDialog())
+					return;
+				return;
+				
+			}
+		});
+		
+		mntmVerifyUpdates.doClick();
+		mnInfo.add(mntmVerifyUpdates);
+		mnInfo.add(mntmAbout);		
 	}
 	
 	private void updateConsole(JTextPane textPane){
