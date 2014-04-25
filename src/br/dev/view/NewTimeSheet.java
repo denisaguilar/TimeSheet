@@ -21,6 +21,7 @@ import br.dev.func.Util;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.Toolkit;
 
 public class NewTimeSheet{
 
@@ -67,6 +68,7 @@ public class NewTimeSheet{
 	public boolean showDialog(int clockUpdate, int updateSeconds) {	
 				
 		dialog = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
+		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(NewTimeSheet.class.getResource("/com/sun/java/swing/plaf/windows/icons/Computer.gif")));
 		dialog.setResizable(false);
 		dialog.addWindowListener(new WindowAdapter() {			
 			@Override
@@ -184,6 +186,7 @@ public class NewTimeSheet{
 		dialog.getContentPane().add(lblConfigureApplication);
 		
 		JButton btnSave = new JButton("Save");
+		dialog.getRootPane().setDefaultButton(btnSave);
 		btnSave.addActionListener(new ActionListener() {
 					
 			public void actionPerformed(ActionEvent arg0) {

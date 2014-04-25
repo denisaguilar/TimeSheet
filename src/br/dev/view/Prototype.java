@@ -6,6 +6,8 @@ import java.awt.Label;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,6 +20,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
@@ -30,6 +33,7 @@ import com.sun.jmx.snmp.tasks.Task;
 public class Prototype {
 
 	private JFrame frmTimesheet;
+	JTextPane console;
 	
 	private static int updateSeconds = 1;
 	private static int clockUpdateInterval = 5;
@@ -78,6 +82,7 @@ public class Prototype {
 		}
 		
 		frmTimesheet = new JFrame();
+		frmTimesheet.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		frmTimesheet.setTitle("TimeSheet "+Util.getVersion());
 		frmTimesheet.setIconImage(Toolkit.getDefaultToolkit().getImage(Prototype.class.getResource("/javax/swing/plaf/metal/icons/ocean/computer.gif")));
 		frmTimesheet.setResizable(false);
@@ -85,6 +90,8 @@ public class Prototype {
 		frmTimesheet.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmTimesheet.getContentPane().setLayout(null);
 		frmTimesheet.setLocationRelativeTo(null);
+		
+		console = new JTextPane();
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Console", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -124,11 +131,12 @@ public class Prototype {
 		
 		thread.start();
 		
-		final JTextPane textPane = new JTextPane();
-		textPane.setBounds(6, 16, 332, 467);
-		panel.add(textPane);
-		textPane.setEnabled(false);
-		textPane.setEditable(false);	
+		
+		console.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
+		console.setBounds(6, 16, 332, 467);
+		panel.add(console);
+		console.setEnabled(false);
+		console.setEditable(false);	
 		
 		JPanel panelStartTime = new JPanel();
 		panelStartTime.setBorder(new TitledBorder(null, "Start Time", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -191,6 +199,7 @@ public class Prototype {
 		panelPredicted.add(textPredicted);
 		
 		final JTextPane txtSession = new JTextPane();
+		txtSession.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		txtSession.setText("Session not initialized.");
 		txtSession.setEnabled(false);
 		txtSession.setEditable(false);
@@ -198,9 +207,10 @@ public class Prototype {
 		frmTimesheet.getContentPane().add(txtSession);
 		
 		final JLabel textTimeBase = new JLabel();
+		textTimeBase.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		textTimeBase.setEnabled(false);
 		textTimeBase.setText("0h 0m 0s");
-		textTimeBase.setBounds(77, 177, 76, 20);
+		textTimeBase.setBounds(88, 178, 76, 20);
 		frmTimesheet.getContentPane().add(textTimeBase);
 		
 		
@@ -237,7 +247,9 @@ public class Prototype {
 		
 		
 		final JButton buttonInitialTime = new JButton("Check-in");
-		final JButton buttonFinalTime = new JButton("Check out ");;;
+		buttonInitialTime.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
+		final JButton buttonFinalTime = new JButton("Check out ");
+		buttonFinalTime.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));;;
 		
 		
 		buttonFinalTime.setEnabled(false);
@@ -286,7 +298,7 @@ public class Prototype {
 					func.updateTimeRemain(false, 0);
 					textRemain.setText(Util.printTime(func.getTimeSheet().getTimeRemain(), "%sh %sm %ss"));
 					
-					updateConsole(textPane);
+					updateConsole();
 					
 					buttonInitialTime.setEnabled(true);
 					buttonFinalTime.setEnabled(false);	
@@ -339,7 +351,8 @@ public class Prototype {
 		buttonInitialTime.setBounds(175, 11, 89, 23);
 		frmTimesheet.getContentPane().add(buttonInitialTime);
 		
-		JButton buttonTimeSheet = new JButton("New TimeSheet");
+		final JButton buttonTimeSheet = new JButton("New TimeSheet");
+		buttonTimeSheet.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		buttonTimeSheet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {	
 				NewTimeSheet setTime = new NewTimeSheet();
@@ -364,7 +377,7 @@ public class Prototype {
 				func.setTimePerDay(setTime.getTimePerDay());
 				textTimeBase.setText(Util.printTime(func.getTimePerDay(), "%sh %sm %ss"));
 				
-				textPane.setText("New TimeSheet Created.");
+				console.setText("New TimeSheet Created.");
 				buttonInitialTime.setEnabled(true);				
 				
 				textStartTime.setText("");
@@ -379,6 +392,7 @@ public class Prototype {
 		frmTimesheet.getContentPane().add(buttonTimeSheet);
 				
 		JLabel lblTimeBase = new JLabel("Work Time");
+		lblTimeBase.setFont(new Font("Segoe UI Semilight", Font.BOLD, 11));
 		lblTimeBase.setBounds(23, 177, 76, 20);
 		frmTimesheet.getContentPane().add(lblTimeBase);
 		
@@ -386,17 +400,62 @@ public class Prototype {
 		JMenuBar menuBar = new JMenuBar();
 		frmTimesheet.setJMenuBar(menuBar);
 		
-		JMenu mnInfo = new JMenu("Info");
+		JMenu mnInfo = new JMenu("TimeSheet");
 		menuBar.add(mnInfo);
 		
-		JMenuItem mntmAbout = new JMenuItem("About");
-		mntmAbout.addActionListener(new ActionListener() {
+		
+		final JMenuItem mntmCheckOut = new JMenuItem("Check out");		
+		final JMenuItem mntmCheckin = new JMenuItem("Check-in");
+		
+		JMenuItem mntmNewTimesheet = new JMenuItem("New TimeSheet");
+		mntmNewTimesheet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				textPane.setText("\n\n TimeSheet 2014 - Version 0.3.4 \n\n Source: https://github.com/denisaguilar/TimeSheet/releases");
+				buttonTimeSheet.doClick();
 			}
 		});
+		mntmNewTimesheet.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
+		mnInfo.add(mntmNewTimesheet);
+		
+		mntmCheckin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				buttonInitialTime.doClick();
+			}
+		});
+		mntmCheckin.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+		mnInfo.add(mntmCheckin);
+		
+		mntmCheckOut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				buttonFinalTime.doClick();
+			}
+		});
+		mntmCheckOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK));
+		mnInfo.add(mntmCheckOut);
+		
+		JMenuItem mntmUpdateConsole = new JMenuItem("Update Console");
+		mntmUpdateConsole.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateConsole();
+			}
+		});
+		mntmUpdateConsole.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
+		mnInfo.add(mntmUpdateConsole);
+		
+		JMenu mnAbout = new JMenu("About");
+		menuBar.add(mnAbout);
 		
 		JMenuItem mntmVerifyUpdates = new JMenuItem("Check for updates");
+		mnAbout.add(mntmVerifyUpdates);
+		mntmVerifyUpdates.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK));
+		
+		JMenuItem mntmAbout = new JMenuItem("About");
+		mnAbout.add(mntmAbout);
+		mntmAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK));
+		mntmAbout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				console.setText("\n TimeSheet 2014 - Version "+Util.getVersion()+" \n Source: https://github.com/denisaguilar/TimeSheet");
+			}
+		});
 		mntmVerifyUpdates.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CheckUpdates check = new CheckUpdates();
@@ -409,11 +468,9 @@ public class Prototype {
 		});
 		
 		mntmVerifyUpdates.doClick();
-		mnInfo.add(mntmVerifyUpdates);
-		mnInfo.add(mntmAbout);		
 	}
 	
-	private void updateConsole(JTextPane textPane){
-		textPane.setText(func.generateInfo());
+	private void updateConsole(){
+		console.setText(func.generateInfo());
 	}
 }

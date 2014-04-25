@@ -1,6 +1,8 @@
 package br.dev.view;
 
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -14,6 +16,7 @@ import java.util.StringTokenizer;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import br.dev.func.Util;
@@ -26,23 +29,25 @@ public class CheckUpdates {
 			@Override
 			public void run() {
 				if(!isUpToDate()){
+					btnOk.setEnabled(true);	
 					btnOk.setVisible(true);			
 				}else{
-					frame.dispose();
+					dialog.dispose();
 				}
 			}
 		}).start();
 	}
 
-	private static JDialog frame;
+	private static JDialog dialog;
 	private static boolean isDone;
 	private static JLabel lblMsg = new JLabel("Check for updates..");
 	private static JButton btnOk;
 	
-	private static final String VERSION = "http://dl.dropboxusercontent.com/s/rxppaoxo9tbmow2/version.txt?dl=1&token_hash=AAFCcRFJ3_-XFPrNDyhLuxcuuQ8yMvTYBl927lF1sA3aVA";
-	private static final String RELEASE = "http://dl.dropboxusercontent.com/s/a4eps87lokjh6x1/time_sheet.jar?dl=1&token_hash=AAH7rFbsOIGm94GB2xtSbCO07GE-S6QWTIUH9RsE3MWZfg";
+	private static final String VERSION = "http://goo.gl/ITOFrf";
+	private static final String RELEASE = "http://goo.gl/HIyL7M";
 	
 	private static String newVersion;
+	private JSeparator separator;
 	
 	/**
 	 * Launch the application.
@@ -69,17 +74,21 @@ public class CheckUpdates {
 	 * @wbp.parser.entryPoint
 	 */
 	public boolean showDialog() {
-		frame = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
-		frame.setResizable(false);
-		frame.setBounds(100, 100, 311, 162);
-		frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		frame.setLocationRelativeTo(null);
+		dialog = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
+		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(CheckUpdates.class.getResource("/com/sun/java/swing/plaf/windows/icons/Computer.gif")));
+		dialog.setResizable(false);
+		dialog.setBounds(100, 100, 311, 162);
+		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.getContentPane().setLayout(null);
+		dialog.setLocationRelativeTo(null);
+		lblMsg.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 				
 		lblMsg.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMsg.setBounds(10, 44, 285, 14);
+		lblMsg.setBounds(10, 59, 285, 14);
 		
 		btnOk = new JButton("Update");
+		btnOk.setEnabled(false);
+		dialog.getRootPane().setDefaultButton(btnOk);
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				lblMsg.setText("Download new version...");
@@ -106,11 +115,21 @@ public class CheckUpdates {
 		});
 		btnOk.setBounds(206, 99, 89, 23);
 		btnOk.setVisible(false);
-		frame.getContentPane().add(btnOk);
+		dialog.getContentPane().add(btnOk);
 		
 		
-		frame.getContentPane().add(lblMsg);
-		frame.setVisible(true);
+		dialog.getContentPane().add(lblMsg);
+		
+		separator = new JSeparator();
+		separator.setBounds(15, 84, 275, 2);
+		dialog.getContentPane().add(separator);
+		
+		JLabel labelVersion = new JLabel("TimeSheet Version "+Util.getVersion());
+		labelVersion.setHorizontalAlignment(SwingConstants.CENTER);
+		labelVersion.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
+		labelVersion.setBounds(10, 34, 285, 14);
+		dialog.getContentPane().add(labelVersion);
+		dialog.setVisible(true);
 			
 		return isDone;				
 	}
@@ -154,7 +173,6 @@ public class CheckUpdates {
 		try {
 			Thread.sleep(800);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return true;

@@ -20,6 +20,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import br.dev.func.Util;
+import java.awt.Toolkit;
 
 public class CustomTime {
 
@@ -61,6 +62,7 @@ public class CustomTime {
 		
 				
 		dialog = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
+		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(CustomTime.class.getResource("/com/sun/java/swing/plaf/windows/icons/Computer.gif")));
 		dialog.setResizable(false);
 		dialog.setBounds(100, 100, 326, 170);
 		dialog.getContentPane().setLayout(null);
@@ -118,6 +120,8 @@ public class CustomTime {
 		dialog.getContentPane().add(textHour);
 		
 		JButton btnOk = new JButton("Ok");
+		dialog.getRootPane().setDefaultButton(btnOk);
+		
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Calendar cal = Calendar.getInstance();
