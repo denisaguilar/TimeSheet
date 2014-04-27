@@ -7,7 +7,7 @@ import java.io.InputStream;
 
 public class Util {
 	
-	private static final String VERSION = "0.4.2";
+	private static final String VERSION = "0.4.3";
 	
 	private static long second = 1000;
 	private static long minute = (60 * 1000);

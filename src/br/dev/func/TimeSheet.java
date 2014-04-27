@@ -8,10 +8,15 @@ public class TimeSheet {
 	private long timePredicted;
 	private long timeRemain;
 	private long timeElapsed;
+	private long idleTime;
 	private List<TimePack> timePacks = new ArrayList<>();
-	
-	
-	
+			
+	public long getIdleTime() {
+		return idleTime;
+	}
+	public void setIdleTime(long idleTime) {
+		this.idleTime = idleTime;
+	}
 	public long getTimePredicted() {
 		return timePredicted;
 	}

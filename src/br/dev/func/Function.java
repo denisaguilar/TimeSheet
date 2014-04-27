@@ -110,8 +110,27 @@ public class Function {
 	public Date toDate(long value){
 		return new Date(value);
 	}
+	
+	public void updateTimeIdle(){
+		long idleTime = timeSheet.getIdleTime();
+		
+		List<TimePack> tps = getTimeSheet().getTimePacks();
+		
+		if(tps.size() > 0){
+				TimePack tp = tps.get(tps.size() -1);
+				idleTime += (getTempTimePack().getStart() -  tp.getEnd());
+				timeSheet.setIdleTime(idleTime);
+		}		
+	}
+	
+	public String formatDate(String format, long time){
+		String formatDate = "dd/MM/yyyy ~> hh:mm:ss a";		
+		SimpleDateFormat sdf = new SimpleDateFormat(format == null ? formatDate : format);
+		return sdf.format(new Date(time));
+	}
 
 	public String generateInfo() {
+		String format = "dd/MM/yyyy hh:mm:ss a";
 		StringBuffer sb = new StringBuffer();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
@@ -122,19 +141,17 @@ public class Function {
 
 			List<TimePack> tps = getTimeSheet().getTimePacks();
 
-
-
 			for (int i = tps.size()-1; i >= 0; i--) {
 				TimePack tp = tps.get(i);
 
 				sb.append("\n");
 				sb.append("Session "+(i+1));
 				sb.append("   ------------------------------------------- \n");
-				sb.append("\tStart :"+ sdf.format(new Date(tp.getStart())));
+				sb.append("\tStart :"+ formatDate(format, tp.getStart()));
 				sb.append("\n");
-				sb.append("\tEnd  :"+ sdf.format(new Date(tp.getEnd())));
+				sb.append("\tEnd  :"+ formatDate(format, tp.getEnd()));
 				sb.append("\n");
-				sb.append("\tInterval "+ Util.printTime(tp.getInterval(), "%sh %sm %ss"));
+				sb.append("\tInterval :"+ Util.printTime(tp.getInterval(), "%sh %sm %ss"));
 
 			}	
 		}

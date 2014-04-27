@@ -22,6 +22,8 @@ import br.dev.func.Util;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.Toolkit;
+import javax.swing.ImageIcon;
+import java.awt.Font;
 
 public class NewTimeSheet{
 
@@ -68,7 +70,8 @@ public class NewTimeSheet{
 	public boolean showDialog(int clockUpdate, int updateSeconds) {	
 				
 		dialog = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
-		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(NewTimeSheet.class.getResource("/com/sun/java/swing/plaf/windows/icons/Computer.gif")));
+		dialog.setTitle("New TimeSheet");
+		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(NewTimeSheet.class.getResource("/resources/icon-ios7-gear-16.png")));
 		dialog.setResizable(false);
 		dialog.addWindowListener(new WindowAdapter() {			
 			@Override
@@ -80,7 +83,7 @@ public class NewTimeSheet{
 		this.updateSeconds = updateSeconds;
 		this.clockUpdateSecods = clockUpdate;
 		
-		dialog.setBounds(100, 100, 342, 213);
+		dialog.setBounds(100, 100, 342, 195);
 		dialog.getContentPane().setLayout(null);
 		dialog.setLocationRelativeTo(null);
 		
@@ -97,14 +100,17 @@ public class NewTimeSheet{
 		dialog.getContentPane().add(lblS);
 		
 		JLabel lblNewLabel = new JLabel("TimeBase (HH:MM:SS)");
-		lblNewLabel.setBounds(10, 38, 130, 14);
+		lblNewLabel.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/prisoner-16.png")));
+		lblNewLabel.setBounds(10, 38, 161, 14);
 		dialog.getContentPane().add(lblNewLabel);		
 		
 		JLabel lblUpdateinterval = new JLabel("UpdateInterval (Seconds)");
-		lblUpdateinterval.setBounds(10, 63, 130, 14);
+		lblUpdateinterval.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/update-16.png")));
+		lblUpdateinterval.setBounds(10, 63, 161, 14);
 		dialog.getContentPane().add(lblUpdateinterval);
 		
-		JLabel lblNewLabel_1 = new JLabel("Clock Update Interval (Seconds)");
+		JLabel lblNewLabel_1 = new JLabel("Clock Update Interval");
+		lblNewLabel_1.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/icon-ios7-clock-outline-16.png")));
 		lblNewLabel_1.setBounds(10, 87, 161, 14);
 		dialog.getContentPane().add(lblNewLabel_1);
 		
@@ -177,15 +183,17 @@ public class NewTimeSheet{
 		textClockUpdate.setColumns(10);
 		
 		JSeparator separator = new JSeparator();
-		separator.setBounds(10, 118, 297, 8);
+		separator.setBounds(19, 118, 297, 8);
 		dialog.getContentPane().add(separator);
 		
 		JLabel lblConfigureApplication = new JLabel("Configure Application");
+		lblConfigureApplication.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblConfigureApplication.setHorizontalAlignment(SwingConstants.CENTER);
 		lblConfigureApplication.setBounds(10, 11, 297, 14);
 		dialog.getContentPane().add(lblConfigureApplication);
 		
 		JButton btnSave = new JButton("Save");
+		btnSave.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/checkmark-24-16.png")));
 		dialog.getRootPane().setDefaultButton(btnSave);
 		btnSave.addActionListener(new ActionListener() {
 					
@@ -214,16 +222,17 @@ public class NewTimeSheet{
 				
 			}
 		});
-		btnSave.setBounds(119, 137, 89, 23);
+		btnSave.setBounds(125, 133, 89, 23);
 		dialog.getContentPane().add(btnSave);
 		
 		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/cancel-16.png")));
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				dialog.setVisible(false);
 			}
 		});
-		btnCancel.setBounds(218, 137, 89, 23);
+		btnCancel.setBounds(224, 133, 89, 23);
 		dialog.getContentPane().add(btnCancel);			
 		
 		dialog.setVisible(true);

@@ -20,23 +20,24 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import br.dev.func.Util;
+import javax.swing.ImageIcon;
 
 
 public class CheckUpdates {
 	
-	static{
-		new Thread(new Runnable() {			
-			@Override
-			public void run() {
-				if(!isUpToDate()){
-					btnOk.setEnabled(true);	
-					btnOk.setVisible(true);			
-				}else{
-					dialog.dispose();
-				}
-			}
-		}).start();
-	}
+//	static{
+//		new Thread(new Runnable() {			
+//			@Override
+//			public void run() {
+//				if(!isUpToDate()){
+//					btnOk.setEnabled(true);	
+//					btnOk.setVisible(true);			
+//				}else{
+//					dialog.dispose();
+//				}
+//			}
+//		}).start();
+//	}
 
 	private static JDialog dialog;
 	private static boolean isDone;
@@ -74,8 +75,22 @@ public class CheckUpdates {
 	 * @wbp.parser.entryPoint
 	 */
 	public boolean showDialog() {
+		
+		new Thread(new Runnable() {			
+			@Override
+			public void run() {
+				if(!isUpToDate()){
+					btnOk.setEnabled(true);	
+					btnOk.setVisible(true);			
+				}else{
+					dialog.dispose();
+				}
+			}
+		}).start();
+		
 		dialog = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
-		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(CheckUpdates.class.getResource("/com/sun/java/swing/plaf/windows/icons/Computer.gif")));
+		dialog.setTitle("Check for updates");
+		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(CheckUpdates.class.getResource("/resources/519929-27_Cloud-16.png")));
 		dialog.setResizable(false);
 		dialog.setBounds(100, 100, 311, 162);
 		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -87,8 +102,10 @@ public class CheckUpdates {
 		lblMsg.setBounds(10, 59, 285, 14);
 		
 		btnOk = new JButton("Update");
-		btnOk.setEnabled(false);
+		btnOk.setIcon(new ImageIcon(CheckUpdates.class.getResource("/resources/519624-123_CloudDownload-16.png")));
 		dialog.getRootPane().setDefaultButton(btnOk);
+		btnOk.setBounds(206, 99, 89, 23);
+		btnOk.setVisible(false);
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				lblMsg.setText("Download new version...");
@@ -112,9 +129,8 @@ public class CheckUpdates {
 					e1.printStackTrace();
 				}			
 			}
-		});
-		btnOk.setBounds(206, 99, 89, 23);
-		btnOk.setVisible(false);
+		});		
+		
 		dialog.getContentPane().add(btnOk);
 		
 		
@@ -136,45 +152,55 @@ public class CheckUpdates {
 	
 	private static boolean isUpToDate(){
 		byte[] responseBytes = null;
-		try {
-			URL url = new URL(VERSION);
-			InputStream is = url.openStream();
-			responseBytes = Util.inputStreamToByteArray(is);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		String downloadedString = new String(responseBytes);
-
-		StringTokenizer curVersionTokens = new StringTokenizer(downloadedString, ".");
-		StringTokenizer thisVersionTokens = new StringTokenizer(Util.getVersion(), ".");
-		StringTokenizer control =  curVersionTokens.countTokens() > thisVersionTokens.countTokens() ? curVersionTokens : thisVersionTokens;
-		int vCur, vThis;
-
-		while (control.hasMoreElements()) {
-			if (curVersionTokens.hasMoreElements()) vCur = Integer.valueOf(curVersionTokens.nextElement().toString()).intValue();
-			else vCur = 0;
-
-			if (thisVersionTokens.hasMoreElements()) vThis = Integer.valueOf(thisVersionTokens.nextElement().toString()).intValue();
-			else vThis = 0;
-
-			if (vCur > vThis) {
-				lblMsg.setText("New version "+downloadedString+" avaliable !");
-				newVersion = downloadedString;
-				return false;
-			}
-			if (vCur < vThis) {
-				lblMsg.setText("No updates avaliable!");
-				return true;
-			}
-		}
 		
-		lblMsg.setText("No updates avaliable!");
+			URL url;
+			try {
+				url = new URL(VERSION);
+				InputStream is = url.openStream();
+				responseBytes = Util.inputStreamToByteArray(is);
+			} catch (IOException e1) {
+				lblMsg.setText("No internet connection avaliable!");
+				try {
+					Thread.sleep(800);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
+			}
+
+			String downloadedString = new String(responseBytes);
+
+			StringTokenizer curVersionTokens = new StringTokenizer(downloadedString, ".");
+			StringTokenizer thisVersionTokens = new StringTokenizer(Util.getVersion(), ".");
+			StringTokenizer control =  curVersionTokens.countTokens() > thisVersionTokens.countTokens() ? curVersionTokens : thisVersionTokens;
+			int vCur, vThis;
+
+			while (control.hasMoreElements()) {
+				if (curVersionTokens.hasMoreElements()) vCur = Integer.valueOf(curVersionTokens.nextElement().toString()).intValue();
+				else vCur = 0;
+
+				if (thisVersionTokens.hasMoreElements()) vThis = Integer.valueOf(thisVersionTokens.nextElement().toString()).intValue();
+				else vThis = 0;
+
+				if (vCur > vThis) {
+					lblMsg.setText("New version "+downloadedString+" avaliable !");
+					newVersion = downloadedString;
+					return false;
+				}
+				if (vCur < vThis) {
+					lblMsg.setText("No updates avaliable!");
+					return true;
+				}
+			}
+
+			lblMsg.setText("No updates avaliable!");
+
 		try {
 			Thread.sleep(800);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
 		return true;
 	}
 }

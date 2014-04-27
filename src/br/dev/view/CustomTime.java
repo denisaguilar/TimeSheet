@@ -21,6 +21,8 @@ import javax.swing.SwingUtilities;
 
 import br.dev.func.Util;
 import java.awt.Toolkit;
+import javax.swing.ImageIcon;
+import javax.swing.JSeparator;
 
 public class CustomTime {
 
@@ -62,7 +64,8 @@ public class CustomTime {
 		
 				
 		dialog = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
-		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(CustomTime.class.getResource("/com/sun/java/swing/plaf/windows/icons/Computer.gif")));
+		dialog.setTitle("Custom Time");
+		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(CustomTime.class.getResource("/resources/calendar-16.png")));
 		dialog.setResizable(false);
 		dialog.setBounds(100, 100, 326, 170);
 		dialog.getContentPane().setLayout(null);
@@ -88,8 +91,8 @@ public class CustomTime {
 		textSecond = new JTextField();
 		textSecond.setColumns(2);
 		textSecond.setBounds(190, 52, 34, 20);
+//		textSecond.setText(String.valueOf(Util.getSeconds(time)));
 		textSecond.setText("00");
-		// text will be selected when field gains focus
 		textSecond.addFocusListener(new java.awt.event.FocusAdapter() {
 			public void focusGained(FocusEvent evt) {
 				SwingUtilities.invokeLater(new Runnable() {
@@ -120,6 +123,7 @@ public class CustomTime {
 		dialog.getContentPane().add(textHour);
 		
 		JButton btnOk = new JButton("Ok");
+		btnOk.setIcon(new ImageIcon(CustomTime.class.getResource("/resources/checkmark-24-16.png")));
 		dialog.getRootPane().setDefaultButton(btnOk);
 		
 		btnOk.addActionListener(new ActionListener() {
@@ -140,16 +144,17 @@ public class CustomTime {
 				}
 			}
 		});
-		btnOk.setBounds(207, 94, 89, 23);
+		btnOk.setBounds(115, 107, 89, 23);
 		dialog.getContentPane().add(btnOk);
 		
 		JButton btnCancel = new JButton("Cancel");
+		btnCancel.setIcon(new ImageIcon(CustomTime.class.getResource("/resources/cancel-16.png")));
 		btnCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				dialog.setVisible(false);
 			}
 		});
-		btnCancel.setBounds(109, 94, 89, 23);
+		btnCancel.setBounds(210, 107, 89, 23);
 		dialog.getContentPane().add(btnCancel);
 		
 		JLabel lblHour = new JLabel("Hour");
@@ -173,6 +178,10 @@ public class CustomTime {
 		JLabel lblHoursClock = new JLabel("Hour of the day (24h)");
 		lblHoursClock.setBounds(23, 29, 116, 14);
 		dialog.getContentPane().add(lblHoursClock);
+		
+		JSeparator separator = new JSeparator();
+		separator.setBounds(23, 90, 273, 2);
+		dialog.getContentPane().add(separator);
 		dialog.addWindowListener(new WindowAdapter() {			
 			@Override
 			public void windowClosed(WindowEvent e) {

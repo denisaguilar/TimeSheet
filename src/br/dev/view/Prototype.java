@@ -29,6 +29,8 @@ import br.dev.func.Function;
 import br.dev.func.Util;
 
 import com.sun.jmx.snmp.tasks.Task;
+import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
 
 public class Prototype {
 
@@ -84,7 +86,7 @@ public class Prototype {
 		frmTimesheet = new JFrame();
 		frmTimesheet.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		frmTimesheet.setTitle("TimeSheet "+Util.getVersion());
-		frmTimesheet.setIconImage(Toolkit.getDefaultToolkit().getImage(Prototype.class.getResource("/javax/swing/plaf/metal/icons/ocean/computer.gif")));
+		frmTimesheet.setIconImage(Toolkit.getDefaultToolkit().getImage(Prototype.class.getResource("/resources/document-open-recent.png")));
 		frmTimesheet.setResizable(false);
 		frmTimesheet.setBounds(100, 100, 744, 578);
 		frmTimesheet.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -95,122 +97,102 @@ public class Prototype {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Console", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(373, 11, 344, 496);
+		panel.setBounds(400, 6, 328, 514);
 		frmTimesheet.getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new TitledBorder(null, "Now", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setBounds(19, 45, 344, 121);
-		frmTimesheet.getContentPane().add(panel_1);
-		panel_1.setLayout(null);
+		JPanel penelPredicted = new JPanel();
+		penelPredicted.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Time Predicted", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		penelPredicted.setBounds(18, 45, 371, 121);
+		frmTimesheet.getContentPane().add(penelPredicted);
+		penelPredicted.setLayout(null);
 				
-		final Label textHour = new Label();
-		textHour.setAlignment(Label.CENTER);
-		textHour.setBounds(6, 16, 328, 95);
-		panel_1.add(textHour);
-		textHour.setFont(new Font("Tahoma", Font.BOLD, 25));
-		textHour.setEnabled(false);
-		
-		Thread thread = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				SimpleDateFormat format = new SimpleDateFormat("HH:mm");
-				while(true){
-					try {					
-						textHour.setText(format.format(new Date()));	
-						Thread.sleep(clockUpdateInterval * 1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-
-			}
-		});
-		
-		thread.start();
-		
+		final Label textPredicted = new Label();
+		textPredicted.setAlignment(Label.CENTER);
+		textPredicted.setBounds(8, 16, 355, 95);
+		penelPredicted.add(textPredicted);
+		textPredicted.setFont(new Font("Segoe UI Semibold", Font.BOLD, 20));
+		textPredicted.setEnabled(false);
 		
 		console.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
-		console.setBounds(6, 16, 332, 467);
+		console.setBounds(10, 16, 308, 467);
 		panel.add(console);
 		console.setEnabled(false);
 		console.setEditable(false);	
 		
 		JPanel panelStartTime = new JPanel();
-		panelStartTime.setBorder(new TitledBorder(null, "Start Time", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panelStartTime.setBounds(19, 208, 344, 46);
+		panelStartTime.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Check-in", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelStartTime.setBounds(18, 208, 174, 46);
 		frmTimesheet.getContentPane().add(panelStartTime);
 		panelStartTime.setLayout(null);
 		
-		final JTextPane textStartTime = new JTextPane();
-		textStartTime.setBounds(6, 16, 332, 23);
+		final JLabel textStartTime = new JLabel();
+		textStartTime.setHorizontalAlignment(SwingConstants.CENTER);
+		textStartTime.setBounds(6, 16, 166, 23);
 		panelStartTime.add(textStartTime);
 		textStartTime.setEnabled(false);
-		textStartTime.setEditable(false);
 		
 		JPanel panelEndTime = new JPanel();
 		panelEndTime.setLayout(null);
-		panelEndTime.setBorder(new TitledBorder(null, "End Time", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panelEndTime.setBounds(19, 264, 344, 46);
+		panelEndTime.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Check out", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelEndTime.setBounds(213, 208, 174, 46);
 		frmTimesheet.getContentPane().add(panelEndTime);
 		
-		final JTextPane textEndTime = new JTextPane();
+		final JLabel textEndTime = new JLabel();
+		textEndTime.setHorizontalAlignment(SwingConstants.CENTER);
 		textEndTime.setEnabled(false);
-		textEndTime.setEditable(false);
-		textEndTime.setBounds(6, 16, 332, 23);
+		textEndTime.setBounds(6, 16, 181, 23);
 		panelEndTime.add(textEndTime);
 		
 		JPanel panelRemaining = new JPanel();
 		panelRemaining.setLayout(null);
 		panelRemaining.setBorder(new TitledBorder(null, "Time Remaining", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panelRemaining.setBounds(19, 321, 344, 46);
+		panelRemaining.setBounds(18, 265, 174, 46);
 		frmTimesheet.getContentPane().add(panelRemaining);
 		
-		final JTextPane textRemain = new JTextPane();
+		final JLabel textRemain = new JLabel();
+		textRemain.setHorizontalAlignment(SwingConstants.CENTER);
 		textRemain.setEnabled(false);
-		textRemain.setEditable(false);
-		textRemain.setBounds(6, 16, 332, 23);
+		textRemain.setBounds(6, 16, 166, 23);
 		panelRemaining.add(textRemain);
 		
 		JPanel panelElapsed = new JPanel();
 		panelElapsed.setLayout(null);
 		panelElapsed.setBorder(new TitledBorder(null, "Time Elapsed", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panelElapsed.setBounds(19, 378, 344, 46);
+		panelElapsed.setBounds(213, 265, 174, 46);
 		frmTimesheet.getContentPane().add(panelElapsed);
 		
-		final JTextPane textElapsed = new JTextPane();
+		final JLabel textElapsed = new JLabel();
+		textElapsed.setHorizontalAlignment(SwingConstants.CENTER);
 		textElapsed.setEnabled(false);
-		textElapsed.setEditable(false);
-		textElapsed.setBounds(6, 16, 332, 23);
+		textElapsed.setBounds(6, 16, 181, 23);
 		panelElapsed.add(textElapsed);
 		
-		JPanel panelPredicted = new JPanel();
-		panelPredicted.setLayout(null);
-		panelPredicted.setBorder(new TitledBorder(null, "Time Predicted", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panelPredicted.setBounds(19, 435, 344, 46);
-		frmTimesheet.getContentPane().add(panelPredicted);
+		JPanel panelIdle = new JPanel();
+		panelIdle.setLayout(null);
+		panelIdle.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Time Idle", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelIdle.setBounds(18, 322, 174, 46);
+		frmTimesheet.getContentPane().add(panelIdle);
 		
-		final JTextPane textPredicted = new JTextPane();
-		textPredicted.setEnabled(false);
-		textPredicted.setEditable(false);
-		textPredicted.setBounds(6, 16, 332, 23);
-		panelPredicted.add(textPredicted);
+		final JLabel textIdle = new JLabel();
+		textIdle.setHorizontalAlignment(SwingConstants.CENTER);
+		textIdle.setEnabled(false);
+		textIdle.setBounds(6, 16, 166, 23);
+		panelIdle.add(textIdle);
 		
 		final JTextPane txtSession = new JTextPane();
 		txtSession.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		txtSession.setText("Session not initialized.");
 		txtSession.setEnabled(false);
 		txtSession.setEditable(false);
-		txtSession.setBounds(19, 487, 344, 20);
+		txtSession.setBounds(19, 493, 174, 20);
 		frmTimesheet.getContentPane().add(txtSession);
 		
 		final JLabel textTimeBase = new JLabel();
 		textTimeBase.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		textTimeBase.setEnabled(false);
 		textTimeBase.setText("0h 0m 0s");
-		textTimeBase.setBounds(88, 178, 76, 20);
+		textTimeBase.setBounds(113, 178, 76, 20);
 		frmTimesheet.getContentPane().add(textTimeBase);
 		
 		
@@ -248,16 +230,15 @@ public class Prototype {
 		
 		final JButton buttonInitialTime = new JButton("Check-in");
 		buttonInitialTime.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
+		buttonInitialTime.setIcon(new ImageIcon(Prototype.class.getResource("/resources/591258-in-16.png")));
 		final JButton buttonFinalTime = new JButton("Check out ");
-		buttonFinalTime.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));;;
+		buttonFinalTime.setIcon(new ImageIcon(Prototype.class.getResource("/resources/591248-out-16.png")));
+		buttonFinalTime.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		
 		
 		buttonFinalTime.setEnabled(false);
 		buttonFinalTime.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				btnNow.setVisible(true);
-//				btnCustom.setVisible(true);				
-				
 				CustomTime custon = new CustomTime();
 				
 				if(!custon.showDialog()){
@@ -285,7 +266,7 @@ public class Prototype {
 					}
 					
 					long time = func.getTempTimePack().getEnd();
-					textEndTime.setText(func.toDate(time).toString());
+					textEndTime.setText(func.formatDate(null, time));
 									
 					buttonInitialTime.setEnabled(true);
 					buttonFinalTime.setEnabled(false);
@@ -297,7 +278,7 @@ public class Prototype {
 					//TODO alterar para core
 					func.updateTimeRemain(false, 0);
 					textRemain.setText(Util.printTime(func.getTimeSheet().getTimeRemain(), "%sh %sm %ss"));
-					
+										
 					updateConsole();
 					
 					buttonInitialTime.setEnabled(true);
@@ -306,14 +287,12 @@ public class Prototype {
 				}
 			}
 		});
-		buttonFinalTime.setBounds(274, 11, 89, 23);
+		buttonFinalTime.setBounds(284, 11, 106, 23);
 		frmTimesheet.getContentPane().add(buttonFinalTime);
 		
 		buttonInitialTime.setEnabled(false);
 		buttonInitialTime.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				btnNow.setVisible(true);
-//				btnCustom.setVisible(true);
 				
 				CustomTime custon = new CustomTime();
 				
@@ -325,20 +304,18 @@ public class Prototype {
 				
 				func.setInitialTime(customTime);
 				
-				// se o valor é custon, o time elapsed deve ser calculado antes.
-//				func.getTimeSheet().setTimeElapsed(new Date().getTime() - func.getTempTimePack().getStart());
-				// alem disso o valor do time remaining tambem deve ser atualizado.
-//				func.getTimeSheet().setTimeRemain(func.getTimePerDay() - func.getTimeSheet().getTimeElapsed());
-				
 				updateThread = new Thread(task);					
 				updateThread.start();
 				
 				long time = func.getTempTimePack().getStart();					
-				textStartTime.setText(func.toDate(time).toString());
+				textStartTime.setText(func.formatDate(null, time));
 				
 				long predictedTime = func.getTimeSheet().getTimePredicted();
-				textPredicted.setText(func.toDate(predictedTime).toString());					
-						
+				textPredicted.setText(func.formatDate(null, predictedTime));
+				
+				func.updateTimeIdle();
+				textIdle.setText(Util.printTime(func.getTimeSheet().getIdleTime(), "%sh %sm %ss"));
+										
 				buttonInitialTime.setEnabled(false);
 				buttonFinalTime.setEnabled(true);	
 				
@@ -348,10 +325,11 @@ public class Prototype {
 								
 			}
 		});
-		buttonInitialTime.setBounds(175, 11, 89, 23);
+		buttonInitialTime.setBounds(171, 11, 106, 23);
 		frmTimesheet.getContentPane().add(buttonInitialTime);
 		
 		final JButton buttonTimeSheet = new JButton("New TimeSheet");
+		buttonTimeSheet.setIcon(new ImageIcon(Prototype.class.getResource("/resources/menu-alt-16.png")));
 		buttonTimeSheet.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		buttonTimeSheet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {	
@@ -385,16 +363,52 @@ public class Prototype {
 				textRemain.setText("");
 				textElapsed.setText("");
 				textPredicted.setText("");
+				textIdle.setText("");
 				txtSession.setText("Session not initialized.");
 			}
 		});
-		buttonTimeSheet.setBounds(19, 11, 112, 23);
+		buttonTimeSheet.setBounds(19, 11, 131, 23);
 		frmTimesheet.getContentPane().add(buttonTimeSheet);
 				
 		JLabel lblTimeBase = new JLabel("Work Time");
+		lblTimeBase.setIcon(new ImageIcon(Prototype.class.getResource("/resources/prisoner-16.png")));
 		lblTimeBase.setFont(new Font("Segoe UI Semilight", Font.BOLD, 11));
-		lblTimeBase.setBounds(23, 177, 76, 20);
+		lblTimeBase.setBounds(23, 177, 90, 20);
 		frmTimesheet.getContentPane().add(lblTimeBase);
+		
+		final JLabel labelHour = new JLabel();
+		labelHour.setHorizontalAlignment(SwingConstants.RIGHT);
+		labelHour.setText("0h 0m 0s");
+		labelHour.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
+		labelHour.setEnabled(false);
+		labelHour.setBounds(330, 493, 60, 20);
+		frmTimesheet.getContentPane().add(labelHour);
+		
+		Thread thread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				SimpleDateFormat format = new SimpleDateFormat("hh:mm a");
+				while(true){
+					try {					
+						labelHour.setText(format.format(new Date()));	
+						Thread.sleep(clockUpdateInterval * 1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		});
+		
+		thread.start();	
+		
+		JLabel lblNow = new JLabel("Now");
+		lblNow.setIcon(new ImageIcon(Prototype.class.getResource("/resources/icon-ios7-clock-outline-16.png")));
+		lblNow.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblNow.setFont(new Font("Segoe UI Semilight", Font.BOLD, 11));
+		lblNow.setBounds(271, 493, 60, 20);
+		frmTimesheet.getContentPane().add(lblNow);
 		
 				
 		JMenuBar menuBar = new JMenuBar();
@@ -405,9 +419,12 @@ public class Prototype {
 		
 		
 		final JMenuItem mntmCheckOut = new JMenuItem("Check out");		
+		mntmCheckOut.setIcon(new ImageIcon(Prototype.class.getResource("/resources/591248-out-16.png")));
 		final JMenuItem mntmCheckin = new JMenuItem("Check-in");
+		mntmCheckin.setIcon(new ImageIcon(Prototype.class.getResource("/resources/591258-in-16.png")));
 		
 		JMenuItem mntmNewTimesheet = new JMenuItem("New TimeSheet");
+		mntmNewTimesheet.setIcon(new ImageIcon(Prototype.class.getResource("/resources/menu-alt-16.png")));
 		mntmNewTimesheet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				buttonTimeSheet.doClick();
@@ -433,6 +450,7 @@ public class Prototype {
 		mnInfo.add(mntmCheckOut);
 		
 		JMenuItem mntmUpdateConsole = new JMenuItem("Update Console");
+		mntmUpdateConsole.setIcon(new ImageIcon(Prototype.class.getResource("/resources/update-16.png")));
 		mntmUpdateConsole.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				updateConsole();
@@ -445,10 +463,20 @@ public class Prototype {
 		menuBar.add(mnAbout);
 		
 		JMenuItem mntmVerifyUpdates = new JMenuItem("Check for updates");
+		mntmVerifyUpdates.setIcon(new ImageIcon(Prototype.class.getResource("/resources/519929-27_Cloud-16.png")));
 		mnAbout.add(mntmVerifyUpdates);
 		mntmVerifyUpdates.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK));
+		mntmVerifyUpdates.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CheckUpdates check = new CheckUpdates();				
+				check.showDialog();
+				return;				
+			}
+		});
+		
 		
 		JMenuItem mntmAbout = new JMenuItem("About");
+		mntmAbout.setIcon(new ImageIcon(Prototype.class.getResource("/resources/info-16.png")));
 		mnAbout.add(mntmAbout);
 		mntmAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK));
 		mntmAbout.addActionListener(new ActionListener() {
@@ -456,17 +484,7 @@ public class Prototype {
 				console.setText("\n TimeSheet 2014 - Version "+Util.getVersion()+" \n Source: https://github.com/denisaguilar/TimeSheet");
 			}
 		});
-		mntmVerifyUpdates.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				CheckUpdates check = new CheckUpdates();
 				
-				if(!check.showDialog())
-					return;
-				return;
-				
-			}
-		});
-		
 		mntmVerifyUpdates.doClick();
 	}
 	
