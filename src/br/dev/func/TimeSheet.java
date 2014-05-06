@@ -8,7 +8,7 @@ public class TimeSheet {
 	private long timePredicted;
 	private long timeRemain;
 	private long timeElapsed;
-	private long idleTime;
+	private long idleTime = 0;
 	private List<TimePack> timePacks = new ArrayList<>();
 			
 	public long getIdleTime() {

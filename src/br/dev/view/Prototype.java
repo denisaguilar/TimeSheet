@@ -29,6 +29,7 @@ import br.dev.func.Function;
 import br.dev.func.Util;
 
 import com.sun.jmx.snmp.tasks.Task;
+
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
 
@@ -40,7 +41,8 @@ public class Prototype {
 	private static int updateSeconds = 1;
 	private static int clockUpdateInterval = 5;
 	
-	private Thread updateThread = null;
+	private Thread updateThreadSimpleTime = null;
+	private Thread updateThreadIdleTime = null;
 	
 	private Function func;
 
@@ -196,6 +198,31 @@ public class Prototype {
 		frmTimesheet.getContentPane().add(textTimeBase);
 		
 		
+		final Task task2 = new Task(){
+			boolean isDone;
+			long value = 0;
+			
+			@Override
+			public void run() {
+				isDone = false;
+				while(!isDone){
+					try {
+						Thread.sleep(updateSeconds * 1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					
+					value = func.updateTimeIdle(true, value, updateSeconds);
+					textIdle.setText(Util.printTime(value, "%sh %sm %ss"));				
+				}
+			}
+
+			@Override
+			public void cancel() {
+				isDone = true;				
+			}
+			
+		};
 		
 		final Task task = new Task() {	
 			boolean isDone;
@@ -210,13 +237,11 @@ public class Prototype {
 						e.printStackTrace();
 					}
 			
-					//alterar para temp values
-					func.updateTimeElapsed(true, updateSeconds);
-					textElapsed.setText(Util.printTime(func.getTimeSheet().getTimeElapsed(), "%sh %sm %ss"));
+					long timeElapsed = func.updateTimeElapsed(true, updateSeconds);
+					textElapsed.setText(Util.printTime(timeElapsed, "%sh %sm %ss"));
 				
-					func.updateTimeRemain(true, updateSeconds);
-					textRemain.setText(Util.printTime(func.getTimeSheet().getTimeRemain(), "%sh %sm %ss"));		
-				
+					long timeRemain = func.updateTimeRemain(true, updateSeconds);
+					textRemain.setText(Util.printTime(timeRemain, "%sh %sm %ss"));				
 				}				
 			}
 			
@@ -257,10 +282,12 @@ public class Prototype {
 					
 					func.setFinalTime(customTime);					
 					
-					// TODO Migrar thread para temp
 					try {
 						task.cancel();
-						updateThread.join();
+						updateThreadSimpleTime.join();
+						
+						updateThreadIdleTime = new Thread(task2);
+						updateThreadIdleTime.start();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -303,9 +330,18 @@ public class Prototype {
 				Date customTime = custon.getCustomDate();	
 				
 				func.setInitialTime(customTime);
-				
-				updateThread = new Thread(task);					
-				updateThread.start();
+								
+				try {
+					if(updateThreadIdleTime != null){
+						task2.cancel();
+						updateThreadSimpleTime.join();
+					}
+					
+					updateThreadSimpleTime = new Thread(task);					
+					updateThreadSimpleTime.start();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}			
 				
 				long time = func.getTempTimePack().getStart();					
 				textStartTime.setText(func.formatDate(null, time));
@@ -313,7 +349,7 @@ public class Prototype {
 				long predictedTime = func.getTimeSheet().getTimePredicted();
 				textPredicted.setText(func.formatDate(null, predictedTime));
 				
-				func.updateTimeIdle();
+				func.updateTimeIdle(false,0,0);
 				textIdle.setText(Util.printTime(func.getTimeSheet().getIdleTime(), "%sh %sm %ss"));
 										
 				buttonInitialTime.setEnabled(false);
@@ -341,10 +377,10 @@ public class Prototype {
 				updateSeconds = setTime.getUpdateSeconds();
 				clockUpdateInterval = setTime.getClockUpdateSeconds();
 								
-				if(updateThread != null)
+				if(updateThreadSimpleTime != null)
 					try {
 						task.cancel();
-						updateThread.join();
+						updateThreadSimpleTime.join();
 					} catch (InterruptedException ex) {
 						ex.printStackTrace();
 					}

@@ -84,45 +84,54 @@ public class Function {
 	}	
 	
 	
-	public void updateTimeElapsed(boolean update, int updateFrequence){
-		
+	public long updateTimeElapsed(boolean update, int updateFrequence){		
 		long diff = 0;
 		if(update)
 			diff = getTimeSheet().getTimeElapsed() + Util.toSeconds(updateFrequence);
 		else{
 			diff = getTotalTimeElapsed();
 		}
-		
+				
 		timeSheet.setTimeElapsed(diff);
+		return diff;
 	}
 	
-	public void updateTimeRemain(boolean update, int updateFrequence){
+	public long updateTimeRemain(boolean update, int updateFrequence){
 		long diff;
 		if(update)
 			diff = getTimeSheet().getTimeRemain() - Util.toSeconds(updateFrequence);
-		else 
-			diff = timePerDay - timeSheet.getTimeElapsed();
+		else{ 
+			diff = timePerDay - timeSheet.getTimeElapsed();			
+		}
 		
 		timeSheet.setTimeRemain(diff);
+		return diff;		
 	}
 			
+	public long updateTimeIdle(boolean update, long time, int updateFrequence){
+		List<TimePack> tps = getTimeSheet().getTimePacks();
 		
+		long idleTime = 0;
+		
+		if(tps.size() > 0){			
+			if(update){	
+				idleTime = time;
+				idleTime += Util.toSeconds(updateFrequence);
+			}else{
+				idleTime = timeSheet.getIdleTime();
+				TimePack tp = tps.get(tps.size() -1);
+				idleTime += (getTempTimePack().getStart() -  tp.getEnd());	
+				timeSheet.setIdleTime(idleTime);
+			}				
+		}			
+		
+		return idleTime;		
+	}
+	
 	public Date toDate(long value){
 		return new Date(value);
 	}
-	
-	public void updateTimeIdle(){
-		long idleTime = timeSheet.getIdleTime();
 		
-		List<TimePack> tps = getTimeSheet().getTimePacks();
-		
-		if(tps.size() > 0){
-				TimePack tp = tps.get(tps.size() -1);
-				idleTime += (getTempTimePack().getStart() -  tp.getEnd());
-				timeSheet.setIdleTime(idleTime);
-		}		
-	}
-	
 	public String formatDate(String format, long time){
 		String formatDate = "dd/MM/yyyy ~> hh:mm:ss a";		
 		SimpleDateFormat sdf = new SimpleDateFormat(format == null ? formatDate : format);
