@@ -1,5 +1,6 @@
 package br.dev.func;
 
+import java.security.InvalidParameterException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,7 @@ public class Function {
 			
 	private TimeSheet timeSheet;
 	private TimePack tempTimePack;
+	private long temp;
 		
 	public long getTimePerDay() {
 		return timePerDay;
@@ -72,9 +74,12 @@ public class Function {
 		
 	}
 	
-	public void setFinalTime(Date date){
-			
-		//adicionado tratamento para customTime
+	public void setFinalTime(Date date) throws Exception{
+		
+		if(date.getTime() < getTempTimePack().getStart()){
+			throw new Exception();						
+		}
+		
 		if(date ==  null)
 			tempTimePack.setEnd(new Date().getTime());
 		else
@@ -108,23 +113,36 @@ public class Function {
 		return diff;		
 	}
 			
-	public long updateTimeIdle(boolean update, long time, int updateFrequence){
+	public long updateTimeIdle(boolean update, boolean now, int updateFrequence){
 		List<TimePack> tps = getTimeSheet().getTimePacks();
 		
 		long idleTime = 0;
 		
 		if(tps.size() > 0){			
 			if(update){	
-				idleTime = time;
-				idleTime += Util.toSeconds(updateFrequence);
+				temp += Util.toSeconds(updateFrequence);
+				idleTime = temp;
 			}else{
 				idleTime = timeSheet.getIdleTime();
 				TimePack tp = tps.get(tps.size() -1);
-				idleTime += (getTempTimePack().getStart() -  tp.getEnd());	
-				timeSheet.setIdleTime(idleTime);
-			}				
+				if(now){
+					idleTime += (new Date().getTime() - tp.getEnd());
+				}else{
+					long totalIdle = 0;
+					for (int i = 0; i < tps.size(); i++) {
+						if(tps.size() - i == 1)
+							totalIdle += (getTempTimePack().getStart() - tps.get(i).getEnd());
+						else						
+							totalIdle += tps.get(i + 1).getStart() - tps.get(i).getEnd();
+					}
+					
+					idleTime = totalIdle;
+				}
+				
+				temp = idleTime;
+				timeSheet.setIdleTime(idleTime);				
+			}
 		}			
-		
 		return idleTime;		
 	}
 	
@@ -144,7 +162,7 @@ public class Function {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		
-		sb.append("..::TimeSheet Console ::..");
+		sb.append("\n..::TimeSheet Console ::..");
 		
 		if(getTimeSheet().getTimePacks().size() > 0){
 

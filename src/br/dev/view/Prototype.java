@@ -32,6 +32,8 @@ import com.sun.jmx.snmp.tasks.Task;
 
 import javax.swing.SwingConstants;
 import javax.swing.ImageIcon;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class Prototype {
 
@@ -200,8 +202,7 @@ public class Prototype {
 		
 		final Task task2 = new Task(){
 			boolean isDone;
-			long value = 0;
-			
+					
 			@Override
 			public void run() {
 				isDone = false;
@@ -212,8 +213,14 @@ public class Prototype {
 						e.printStackTrace();
 					}
 					
-					value = func.updateTimeIdle(true, value, updateSeconds);
-					textIdle.setText(Util.printTime(value, "%sh %sm %ss"));				
+					long value = func.updateTimeIdle(true, true, updateSeconds);
+					textIdle.setText(Util.printTime(value, "%sh %sm %ss"));			
+					
+//					if(value > (1000 * 5 + 3)){
+//						frmTimesheet.setAlwaysOnTop(true);
+//						JOptionPane.showConfirmDialog(frmTimesheet, "O seu tempo de almoço parece ter acabado.", "Tempo", JOptionPane.INFORMATION_MESSAGE);
+//						frmTimesheet.setAlwaysOnTop(false);
+//					}
 				}
 			}
 
@@ -273,15 +280,17 @@ public class Prototype {
 				Date customTime = custon.getCustomDate();			
 				
 				if(buttonFinalTime.isEnabled()){
+										
+					try {
+						func.setFinalTime(customTime);
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(null, "O tempo final não pode ser inferior ao inicial", "Erro de tempo", JOptionPane.WARNING_MESSAGE);
+						return;
+					}		
 					
-					//Regra de negocio
-					if(customTime.getTime() < func.getTempTimePack().getStart()){
-						JOptionPane.showMessageDialog(null, "O tempo final não pode ser inferiror ao inicial", "Erro de tempo", JOptionPane.WARNING_MESSAGE);
-						return;						
-					}					
-					
-					func.setFinalTime(customTime);					
-					
+					long idleTime = func.updateTimeIdle(false, true, 0);
+					textIdle.setText(Util.printTime(idleTime, "%sh %sm %ss"));
+										
 					try {
 						task.cancel();
 						updateThreadSimpleTime.join();
@@ -297,14 +306,12 @@ public class Prototype {
 									
 					buttonInitialTime.setEnabled(true);
 					buttonFinalTime.setEnabled(false);
+										
+					long elapsedTime = func.updateTimeElapsed(false, 0);
+					textElapsed.setText(Util.printTime(elapsedTime, "%sh %sm %ss"));
 					
-					//TODO alterar para core
-					func.updateTimeElapsed(false, 0);
-					textElapsed.setText(Util.printTime(func.getTimeSheet().getTimeElapsed(), "%sh %sm %ss"));
-					
-					//TODO alterar para core
-					func.updateTimeRemain(false, 0);
-					textRemain.setText(Util.printTime(func.getTimeSheet().getTimeRemain(), "%sh %sm %ss"));
+					long remainTime = func.updateTimeRemain(false, 0);
+					textRemain.setText(Util.printTime(remainTime, "%sh %sm %ss"));
 										
 					updateConsole();
 					
@@ -341,16 +348,16 @@ public class Prototype {
 					updateThreadSimpleTime.start();
 				} catch (InterruptedException e1) {
 					e1.printStackTrace();
-				}			
+				}	
+				
+				long idleTime = func.updateTimeIdle(false, false,0);
+				textIdle.setText(Util.printTime(idleTime, "%sh %sm %ss"));
 				
 				long time = func.getTempTimePack().getStart();					
 				textStartTime.setText(func.formatDate(null, time));
 				
 				long predictedTime = func.getTimeSheet().getTimePredicted();
 				textPredicted.setText(func.formatDate(null, predictedTime));
-				
-				func.updateTimeIdle(false,0,0);
-				textIdle.setText(Util.printTime(func.getTimeSheet().getIdleTime(), "%sh %sm %ss"));
 										
 				buttonInitialTime.setEnabled(false);
 				buttonFinalTime.setEnabled(true);	
@@ -517,7 +524,7 @@ public class Prototype {
 		mntmAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK));
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				console.setText("\n TimeSheet 2014 - Version "+Util.getVersion()+" \n Source: https://github.com/denisaguilar/TimeSheet");
+				console.setText("\n TimeSheet 2014 - Version "+Util.getVersion()+" \n Source: https://github.com/denisaguilar/TimeSheet"+ "\n\n Back to Console (Ctrl+Z)");
 			}
 		});
 				
@@ -525,6 +532,9 @@ public class Prototype {
 	}
 	
 	private void updateConsole(){
-		console.setText(func.generateInfo());
+		if(func != null)
+			console.setText(func.generateInfo());
+		else
+			console.setText("easter eggs! //TODO");
 	}
 }
