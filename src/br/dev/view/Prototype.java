@@ -3,6 +3,7 @@ package br.dev.view;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Label;
+import java.awt.SystemColor;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,8 +21,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
@@ -29,11 +33,6 @@ import br.dev.func.Function;
 import br.dev.func.Util;
 
 import com.sun.jmx.snmp.tasks.Task;
-
-import javax.swing.SwingConstants;
-import javax.swing.ImageIcon;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 
 public class Prototype {
 
@@ -46,6 +45,7 @@ public class Prototype {
 	private Thread updateThreadSimpleTime = null;
 	private Thread updateThreadIdleTime = null;
 	
+	private boolean easter;
 	private Function func;
 
 	/**
@@ -198,8 +198,7 @@ public class Prototype {
 		textTimeBase.setText("0h 0m 0s");
 		textTimeBase.setBounds(113, 178, 76, 20);
 		frmTimesheet.getContentPane().add(textTimeBase);
-		
-		
+				
 		final Task task2 = new Task(){
 			boolean isDone;
 					
@@ -453,6 +452,39 @@ public class Prototype {
 		lblNow.setBounds(271, 493, 60, 20);
 		frmTimesheet.getContentPane().add(lblNow);
 		
+		final JTextArea lblhid = new JTextArea("");
+		lblhid.setBackground(SystemColor.control);
+		lblhid.setEditable(false);
+		lblhid.setLineWrap(true);
+		lblhid.setFont(new Font("Segoe UI Semibold", Font.BOLD, 11));
+		lblhid.setBounds(18, 395, 369, 63);
+		frmTimesheet.getContentPane().add(lblhid);
+		
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				do{
+					try {
+						Thread.sleep(1000 * 60 * 2);
+//						if(easter){
+							String[] text = Util.getText();
+							for (int i = 0; i < text.length; i++) {
+								lblhid.setText(text[i]);
+								Thread.sleep(1000 * text[i].split("").length / 13);
+							}					
+							
+							lblhid.setText("");
+//						}
+							
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}				
+				
+				}while(true);
+			}
+		}).start();
+		
 				
 		JMenuBar menuBar = new JMenuBar();
 		frmTimesheet.setJMenuBar(menuBar);
@@ -534,7 +566,9 @@ public class Prototype {
 	private void updateConsole(){
 		if(func != null)
 			console.setText(func.generateInfo());
-		else
-			console.setText("easter eggs! //TODO");
+		else{
+			console.setText("go ahead... make my day.");
+			easter = true;		
+		}
 	}
 }
