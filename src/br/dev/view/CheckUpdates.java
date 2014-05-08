@@ -43,10 +43,7 @@ public class CheckUpdates {
 	private static boolean isDone;
 	private static JLabel lblMsg = new JLabel("Check for updates..");
 	private static JButton btnOk;
-	
-	private static final String VERSION = "http://goo.gl/ITOFrf";
-	private static final String RELEASE = "http://goo.gl/HIyL7M";
-	
+		
 	private static String newVersion;
 	private JSeparator separator;
 	
@@ -111,10 +108,10 @@ public class CheckUpdates {
 				lblMsg.setText("Download new version...");
 				
 				try {
-					URL url = new URL(RELEASE);
+					URL url = new URL(Util.getRelease());
 					InputStream is = url.openStream();
 					
-					File file = new File(System.getProperty("user.dir")+"\\TimeSheet-"+newVersion+".jar");
+					File file = new File(System.getProperty("user.dir")+"\\TMS-"+newVersion+".jar");
 					OutputStream os = new FileOutputStream(file);
 					os.write(Util.inputStreamToByteArray(is));
 					
@@ -140,7 +137,7 @@ public class CheckUpdates {
 		separator.setBounds(15, 84, 275, 2);
 		dialog.getContentPane().add(separator);
 		
-		JLabel labelVersion = new JLabel("TimeSheet Version "+Util.getVersion());
+		JLabel labelVersion = new JLabel("TimeSheet Version "+Util.getVersionNumber());
 		labelVersion.setHorizontalAlignment(SwingConstants.CENTER);
 		labelVersion.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		labelVersion.setBounds(10, 34, 285, 14);
@@ -155,7 +152,7 @@ public class CheckUpdates {
 		
 			URL url;
 			try {
-				url = new URL(VERSION);
+				url = new URL(Util.getVersion());
 				InputStream is = url.openStream();
 				responseBytes = Util.inputStreamToByteArray(is);
 			} catch (IOException e1) {
@@ -171,7 +168,7 @@ public class CheckUpdates {
 			String downloadedString = new String(responseBytes);
 
 			StringTokenizer curVersionTokens = new StringTokenizer(downloadedString, ".");
-			StringTokenizer thisVersionTokens = new StringTokenizer(Util.getVersion(), ".");
+			StringTokenizer thisVersionTokens = new StringTokenizer(Util.getVersionNumber(), ".");
 			StringTokenizer control =  curVersionTokens.countTokens() > thisVersionTokens.countTokens() ? curVersionTokens : thisVersionTokens;
 			int vCur, vThis;
 

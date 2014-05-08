@@ -39,13 +39,13 @@ public class Prototype {
 	private JFrame frmTimesheet;
 	JTextPane console;
 	
+	private static int wordPerSecond = 13;
 	private static int updateSeconds = 1;
 	private static int clockUpdateInterval = 5;
 	
 	private Thread updateThreadSimpleTime = null;
 	private Thread updateThreadIdleTime = null;
 	
-	private boolean easter;
 	private Function func;
 
 	/**
@@ -89,7 +89,7 @@ public class Prototype {
 		
 		frmTimesheet = new JFrame();
 		frmTimesheet.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
-		frmTimesheet.setTitle("TimeSheet "+Util.getVersion());
+		frmTimesheet.setTitle("TimeSheet "+Util.getVersionNumber());
 		frmTimesheet.setIconImage(Toolkit.getDefaultToolkit().getImage(Prototype.class.getResource("/resources/document-open-recent.png")));
 		frmTimesheet.setResizable(false);
 		frmTimesheet.setBounds(100, 100, 744, 578);
@@ -139,13 +139,13 @@ public class Prototype {
 		JPanel panelEndTime = new JPanel();
 		panelEndTime.setLayout(null);
 		panelEndTime.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Check out", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panelEndTime.setBounds(213, 208, 174, 46);
+		panelEndTime.setBounds(213, 208, 177, 46);
 		frmTimesheet.getContentPane().add(panelEndTime);
 		
 		final JLabel textEndTime = new JLabel();
 		textEndTime.setHorizontalAlignment(SwingConstants.CENTER);
 		textEndTime.setEnabled(false);
-		textEndTime.setBounds(6, 16, 181, 23);
+		textEndTime.setBounds(6, 16, 168, 23);
 		panelEndTime.add(textEndTime);
 		
 		JPanel panelRemaining = new JPanel();
@@ -163,13 +163,13 @@ public class Prototype {
 		JPanel panelElapsed = new JPanel();
 		panelElapsed.setLayout(null);
 		panelElapsed.setBorder(new TitledBorder(null, "Time Elapsed", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panelElapsed.setBounds(213, 265, 174, 46);
+		panelElapsed.setBounds(213, 265, 177, 46);
 		frmTimesheet.getContentPane().add(panelElapsed);
 		
 		final JLabel textElapsed = new JLabel();
 		textElapsed.setHorizontalAlignment(SwingConstants.CENTER);
 		textElapsed.setEnabled(false);
-		textElapsed.setBounds(6, 16, 181, 23);
+		textElapsed.setBounds(6, 16, 167, 23);
 		panelElapsed.add(textElapsed);
 		
 		JPanel panelIdle = new JPanel();
@@ -214,12 +214,6 @@ public class Prototype {
 					
 					long value = func.updateTimeIdle(true, true, updateSeconds);
 					textIdle.setText(Util.printTime(value, "%sh %sm %ss"));			
-					
-//					if(value > (1000 * 5 + 3)){
-//						frmTimesheet.setAlwaysOnTop(true);
-//						JOptionPane.showConfirmDialog(frmTimesheet, "O seu tempo de almoço parece ter acabado.", "Tempo", JOptionPane.INFORMATION_MESSAGE);
-//						frmTimesheet.setAlwaysOnTop(false);
-//					}
 				}
 			}
 
@@ -453,12 +447,12 @@ public class Prototype {
 		frmTimesheet.getContentPane().add(lblNow);
 		
 		final JTextArea lblhid = new JTextArea("");
+		lblhid.setBounds(18, 380, 372, 90);
+		frmTimesheet.getContentPane().add(lblhid);
 		lblhid.setBackground(SystemColor.control);
 		lblhid.setEditable(false);
 		lblhid.setLineWrap(true);
 		lblhid.setFont(new Font("Segoe UI Semibold", Font.BOLD, 11));
-		lblhid.setBounds(18, 395, 369, 63);
-		frmTimesheet.getContentPane().add(lblhid);
 		
 		new Thread(new Runnable() {
 			
@@ -466,19 +460,23 @@ public class Prototype {
 			public void run() {
 				do{
 					try {
-						Thread.sleep(1000 * 60 * 2);
-//						if(easter){
-							String[] text = Util.getText();
-							for (int i = 0; i < text.length; i++) {
-								lblhid.setText(text[i]);
-								Thread.sleep(1000 * text[i].split("").length / 13);
-							}					
+						Thread.sleep(1000 * 5);
+						String[] text = Util.getText();
+						for (int i = 0; i < text.length; i++) {
+							String[] t = text[i].split("#"); 
+							lblhid.setText(t[0]);
 							
-							lblhid.setText("");
-//						}
-							
+							if(t.length == 1){
+								Thread.sleep(1000 * text[i].split("").length / wordPerSecond);
+							}else{
+								Thread.sleep(1000 * Integer.parseInt(t[1]));
+							}
+						}					
+						
+						lblhid.setText("");
+						
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						lblhid.setText("ERROR!");
 					}				
 				
 				}while(true);
@@ -567,8 +565,7 @@ public class Prototype {
 		if(func != null)
 			console.setText(func.generateInfo());
 		else{
-			console.setText("go ahead... make my day.");
-			easter = true;		
+			console.setText("Go ahead... make my day.");
 		}
 	}
 }
