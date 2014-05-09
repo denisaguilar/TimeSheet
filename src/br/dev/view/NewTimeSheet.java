@@ -22,23 +22,32 @@ import br.dev.func.Util;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.Toolkit;
+
 import javax.swing.ImageIcon;
+
 import java.awt.Font;
 
 public class NewTimeSheet{
 
 	private long timeDay;
+	private long timeIdle;
 	private int updateSeconds;
 	private int clockUpdateSecods;
 	
 	JDialog dialog;
 	boolean isDone;
-	private JTextField textTimeHour;
 	private JTextField textUpdate;
 	private JTextField textClockUpdate;
+	private JTextField textTimeHour;
 	private JTextField textTimeMinute;
 	private JTextField textTimeSeconds;
+	private JTextField textTimeIdleH;
+	private JTextField textTimeIdleM;
+	private JTextField textTimeIdleS;
 	
+	public long getTimeIdle(){
+		return timeIdle;
+	}
 
 	public long getTimePerDay() {
 		return timeDay;
@@ -83,7 +92,7 @@ public class NewTimeSheet{
 		this.updateSeconds = updateSeconds;
 		this.clockUpdateSecods = clockUpdate;
 		
-		dialog.setBounds(100, 100, 342, 195);
+		dialog.setBounds(100, 100, 342, 212);
 		dialog.getContentPane().setLayout(null);
 		dialog.setLocationRelativeTo(null);
 		
@@ -106,12 +115,12 @@ public class NewTimeSheet{
 		
 		JLabel lblUpdateinterval = new JLabel("UpdateInterval (Seconds)");
 		lblUpdateinterval.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/update-16.png")));
-		lblUpdateinterval.setBounds(10, 63, 161, 14);
+		lblUpdateinterval.setBounds(11, 84, 161, 14);
 		dialog.getContentPane().add(lblUpdateinterval);
 		
 		JLabel lblNewLabel_1 = new JLabel("Clock Update Interval");
 		lblNewLabel_1.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/icon-ios7-clock-outline-16.png")));
-		lblNewLabel_1.setBounds(10, 87, 161, 14);
+		lblNewLabel_1.setBounds(11, 108, 161, 14);
 		dialog.getContentPane().add(lblNewLabel_1);
 		
 		textTimeHour = new JTextField();
@@ -170,20 +179,20 @@ public class NewTimeSheet{
 		
 		textUpdate = new JTextField();
 		textUpdate.setHorizontalAlignment(SwingConstants.RIGHT);
-		textUpdate.setBounds(181, 63, 126, 20);
+		textUpdate.setBounds(182, 84, 126, 20);
 		textUpdate.setText(String.valueOf(getUpdateSeconds()));
 		dialog.getContentPane().add(textUpdate);
 		textUpdate.setColumns(10);
 		
 		textClockUpdate = new JTextField();
 		textClockUpdate.setHorizontalAlignment(SwingConstants.RIGHT);
-		textClockUpdate.setBounds(181, 87, 126, 20);
+		textClockUpdate.setBounds(182, 108, 126, 20);
 		textClockUpdate.setText(String.valueOf(getClockUpdateSeconds()));
 		dialog.getContentPane().add(textClockUpdate);
 		textClockUpdate.setColumns(10);
 		
 		JSeparator separator = new JSeparator();
-		separator.setBounds(19, 118, 297, 8);
+		separator.setBounds(17, 137, 297, 8);
 		dialog.getContentPane().add(separator);
 		
 		JLabel lblConfigureApplication = new JLabel("Configure Application");
@@ -200,12 +209,15 @@ public class NewTimeSheet{
 			public void actionPerformed(ActionEvent arg0) {
 				SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
 				Date timeBase = null;
+				Date timeI = null;
 				
 				try {
 					timeBase = sdf.parse(String.format("%s:%s:%s", textTimeHour.getText(), textTimeMinute.getText(), textTimeSeconds.getText()));
+					timeI = sdf.parse(String.format("%s:%s:%S", textTimeIdleH.getText(), textTimeIdleM.getText(), textTimeIdleS.getText()));
 					
 					Date dateZero = sdf.parse("00:00:00");					
 					timeDay = Util.convertTime(timeBase.getTime() - dateZero.getTime());
+					timeIdle = Util.convertTime(timeI.getTime() - dateZero.getTime());
 					
 					if(!textUpdate.getText().isEmpty())
 						setUpdateSeconds(Integer.parseInt(textUpdate.getText()));
@@ -222,7 +234,7 @@ public class NewTimeSheet{
 				
 			}
 		});
-		btnSave.setBounds(125, 133, 89, 23);
+		btnSave.setBounds(125, 149, 89, 23);
 		dialog.getContentPane().add(btnSave);
 		
 		JButton btnCancel = new JButton("Cancel");
@@ -232,8 +244,79 @@ public class NewTimeSheet{
 				dialog.setVisible(false);
 			}
 		});
-		btnCancel.setBounds(224, 133, 89, 23);
+		btnCancel.setBounds(224, 149, 89, 23);
 		dialog.getContentPane().add(btnCancel);			
+		
+		JLabel lblIdletime = new JLabel("IdleTime (HH:MM:SS)");
+		lblIdletime.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/icon-pause-16.png")));
+		lblIdletime.setBounds(10, 60, 161, 14);
+		dialog.getContentPane().add(lblIdletime);
+		
+		textTimeIdleH = new JTextField();
+		textTimeIdleH.setText("01");
+		textTimeIdleH.setHorizontalAlignment(SwingConstants.CENTER);
+		textTimeIdleH.setColumns(2);
+		textTimeIdleH.setBounds(181, 60, 29, 20);
+		textTimeIdleH.addFocusListener(new java.awt.event.FocusAdapter() {
+			public void focusGained(FocusEvent evt) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						textTimeIdleH.selectAll();
+					}
+				});
+			}
+		});
+		
+		dialog.getContentPane().add(textTimeIdleH);
+		
+		JLabel label_1 = new JLabel("H");
+		label_1.setBounds(213, 64, 29, 14);
+		dialog.getContentPane().add(label_1);
+		
+		textTimeIdleM = new JTextField();
+		textTimeIdleM.setText("00");
+		textTimeIdleM.setHorizontalAlignment(SwingConstants.CENTER);
+		textTimeIdleM.setColumns(2);
+		textTimeIdleM.setBounds(223, 60, 29, 20);
+		textTimeIdleM.addFocusListener(new java.awt.event.FocusAdapter() {
+			public void focusGained(FocusEvent evt) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						textTimeIdleM.selectAll();
+					}
+				});
+			}
+		});
+		
+		dialog.getContentPane().add(textTimeIdleM);
+		
+		JLabel label_2 = new JLabel("M");
+		label_2.setBounds(258, 64, 29, 14);
+		dialog.getContentPane().add(label_2);
+		
+		textTimeIdleS = new JTextField();
+		textTimeIdleS.setText("00");
+		textTimeIdleS.setHorizontalAlignment(SwingConstants.CENTER);
+		textTimeIdleS.setColumns(2);
+		textTimeIdleS.setBounds(269, 60, 29, 20);
+		textTimeIdleS.addFocusListener(new java.awt.event.FocusAdapter() {
+			public void focusGained(FocusEvent evt) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						textTimeIdleS.selectAll();
+					}
+				});
+			}
+		});
+		
+		dialog.getContentPane().add(textTimeIdleS);
+		
+		JLabel label_3 = new JLabel("S");
+		label_3.setBounds(301, 64, 29, 14);
+		dialog.getContentPane().add(label_3);
 		
 		dialog.setVisible(true);
 		

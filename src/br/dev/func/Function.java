@@ -8,11 +8,21 @@ import java.util.List;
 public class Function {
 	
 	private long timePerDay;
-			
+	private long predPause;	
+	
 	private TimeSheet timeSheet;
 	private TimePack tempTimePack;
 	private long temp;
 		
+	
+	public long getPredPause() {
+		return predPause;
+	}
+
+	public void setPredPause(long predPause) {
+		this.predPause = predPause;
+	}
+
 	public long getTimePerDay() {
 		return timePerDay;
 	}

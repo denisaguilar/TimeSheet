@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -199,9 +200,22 @@ public class Prototype {
 		textTimeBase.setBounds(113, 178, 76, 20);
 		frmTimesheet.getContentPane().add(textTimeBase);
 				
+		JLabel lblPredictedStop = new JLabel("Pred Pause");
+		lblPredictedStop.setIcon(new ImageIcon(Prototype.class.getResource("/resources/icon-pause-16.png")));
+		lblPredictedStop.setFont(new Font("Segoe UI Semilight", Font.BOLD, 11));
+		lblPredictedStop.setBounds(215, 178, 90, 20);
+		frmTimesheet.getContentPane().add(lblPredictedStop);
+		
+		final JLabel label_PredPause = new JLabel();
+		label_PredPause.setText("0h 0m 0s");
+		label_PredPause.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
+		label_PredPause.setEnabled(false);
+		label_PredPause.setBounds(316, 178, 76, 20);
+		frmTimesheet.getContentPane().add(label_PredPause);
+		
 		final Task task2 = new Task(){
 			boolean isDone;
-					
+			
 			@Override
 			public void run() {
 				isDone = false;
@@ -213,7 +227,15 @@ public class Prototype {
 					}
 					
 					long value = func.updateTimeIdle(true, true, updateSeconds);
-					textIdle.setText(Util.printTime(value, "%sh %sm %ss"));			
+					textIdle.setText(Util.printTime(value, "%sh %sm %ss"));	
+					
+					if(value > func.getPredPause() && value < func.getPredPause() + 10){
+						frmTimesheet.setAlwaysOnTop(true);
+						Icon icon = new ImageIcon(Prototype.class.getResource("/resources/prisoner-32.png"));
+						JOptionPane.showConfirmDialog(frmTimesheet, "Hey, Mandatory brake time is over, Back to Work!!", "Time Over!",JOptionPane.CLOSED_OPTION, JOptionPane.INFORMATION_MESSAGE, icon);
+						frmTimesheet.setAlwaysOnTop(false);
+												
+					}
 				}
 			}
 
@@ -241,7 +263,15 @@ public class Prototype {
 					textElapsed.setText(Util.printTime(timeElapsed, "%sh %sm %ss"));
 				
 					long timeRemain = func.updateTimeRemain(true, updateSeconds);
-					textRemain.setText(Util.printTime(timeRemain, "%sh %sm %ss"));				
+					textRemain.setText(Util.printTime(timeRemain, "%sh %sm %ss"));	
+					
+					if(timeRemain < 0 && timeRemain > -1000){
+						frmTimesheet.setAlwaysOnTop(true);
+						Icon icon = new ImageIcon(Prototype.class.getResource("/resources/running64.png"));
+						JOptionPane.showConfirmDialog(frmTimesheet, "Hey, work time is Over, Enjoy your Freedom!!", "Time is Over!",JOptionPane.CLOSED_OPTION, JOptionPane.INFORMATION_MESSAGE, icon);
+						frmTimesheet.setAlwaysOnTop(false);
+												
+					}
 				}				
 			}
 			
@@ -389,7 +419,9 @@ public class Prototype {
 				buttonFinalTime.setEnabled(false);
 				
 				func.setTimePerDay(setTime.getTimePerDay());
+				func.setPredPause(setTime.getTimeIdle());
 				textTimeBase.setText(Util.printTime(func.getTimePerDay(), "%sh %sm %ss"));
+				label_PredPause.setText(Util.printTime(func.getPredPause(), "%sh %sm %ss"));
 				
 				console.setText("New TimeSheet Created.");
 				buttonInitialTime.setEnabled(true);				
@@ -420,8 +452,7 @@ public class Prototype {
 		labelHour.setBounds(330, 493, 60, 20);
 		frmTimesheet.getContentPane().add(labelHour);
 		
-		Thread thread = new Thread(new Runnable() {
-			
+		Thread thread = new Thread(new Runnable() {			
 			@Override
 			public void run() {
 				SimpleDateFormat format = new SimpleDateFormat("hh:mm a");
@@ -453,7 +484,7 @@ public class Prototype {
 		lblhid.setEditable(false);
 		lblhid.setLineWrap(true);
 		lblhid.setFont(new Font("Segoe UI Semibold", Font.BOLD, 11));
-		
+				
 		new Thread(new Runnable() {
 			
 			@Override
