@@ -15,6 +15,7 @@ import java.util.Date;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -230,11 +231,7 @@ public class Prototype {
 					textIdle.setText(Util.printTime(value, "%sh %sm %ss"));	
 					
 					if(value > func.getPredPause() && value < func.getPredPause() + 10){
-						frmTimesheet.setAlwaysOnTop(true);
-						Icon icon = new ImageIcon(Prototype.class.getResource("/resources/prisoner-32.png"));
-						JOptionPane.showConfirmDialog(frmTimesheet, "Hey, Mandatory brake time is over, Back to Work!!", "Time Over!",JOptionPane.CLOSED_OPTION, JOptionPane.INFORMATION_MESSAGE, icon);
-						frmTimesheet.setAlwaysOnTop(false);
-												
+						showMessage("Hey, Mandatory brake time is over, Back to Work!!", "Time Over!", "/resources/prisoner-32.png");			
 					}
 				}
 			}
@@ -266,11 +263,7 @@ public class Prototype {
 					textRemain.setText(Util.printTime(timeRemain, "%sh %sm %ss"));	
 					
 					if(timeRemain < 0 && timeRemain > -1000){
-						frmTimesheet.setAlwaysOnTop(true);
-						Icon icon = new ImageIcon(Prototype.class.getResource("/resources/running64.png"));
-						JOptionPane.showConfirmDialog(frmTimesheet, "Hey, work time is Over, Enjoy your Freedom!!", "Time is Over!",JOptionPane.CLOSED_OPTION, JOptionPane.INFORMATION_MESSAGE, icon);
-						frmTimesheet.setAlwaysOnTop(false);
-												
+						showMessage("Hey, work time is Over, Enjoy your Freedom!!", "Time Over!", "/resources/running64.png");					
 					}
 				}				
 			}
@@ -280,9 +273,7 @@ public class Prototype {
 				isDone = true;				
 			}
 		};
-		
-		
-		
+				
 		final JButton buttonInitialTime = new JButton("Check-in");
 		buttonInitialTime.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		buttonInitialTime.setIcon(new ImageIcon(Prototype.class.getResource("/resources/591258-in-16.png")));
@@ -585,11 +576,27 @@ public class Prototype {
 		mntmAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK));
 		mntmAbout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				console.setText("\n TimeSheet 2014 - Version "+Util.getVersion()+" \n Source: https://github.com/denisaguilar/TimeSheet"+ "\n\n Back to Console (Ctrl+Z)");
+				console.setText("\n TimeSheet 2014 - Version "+Util.getVersionNumber()+" \n Source: https://github.com/denisaguilar/TimeSheet"+ "\n\n Back to Console (Ctrl+Z)");
 			}
 		});
 				
 		mntmVerifyUpdates.doClick();
+	}
+	
+	private void showMessage(final String message, final String title, final String icon){
+		Thread thread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				JOptionPane jOptionPane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE, JOptionPane.CLOSED_OPTION, new ImageIcon(Prototype.class.getResource(icon)));
+				JDialog dialog = jOptionPane.createDialog(null, title);
+				dialog.setLocationRelativeTo(null);
+				dialog.setAlwaysOnTop(true);						
+				dialog.setVisible(true);
+			}
+		});
+		
+		thread.start();
 	}
 	
 	private void updateConsole(){

@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 
 public class Util {
 	
-	private static final String VERSION_NUMBER = "0.5";
+	private static final String VERSION_NUMBER = "0.5.1";
 	
 	private static final String VERSION = "http://goo.gl/ITOFrf";
 	private static final String RELEASE = "http://goo.gl/HIyL7M";
