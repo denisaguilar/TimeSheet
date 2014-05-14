@@ -1,4 +1,4 @@
-package br.dev.func;
+package br.dev.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

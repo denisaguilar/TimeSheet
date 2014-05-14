@@ -19,8 +19,10 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import br.dev.func.Util;
+import br.dev.model.Util;
+
 import java.awt.Toolkit;
+
 import javax.swing.ImageIcon;
 import javax.swing.JSeparator;
 

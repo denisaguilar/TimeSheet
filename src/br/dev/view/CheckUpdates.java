@@ -19,7 +19,8 @@ import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
-import br.dev.func.Util;
+import br.dev.model.Util;
+
 import javax.swing.ImageIcon;
 
 
