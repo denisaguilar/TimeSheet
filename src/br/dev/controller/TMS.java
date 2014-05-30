@@ -35,7 +35,8 @@ public class TMS implements ButtonListener{
 	public TMS() {
 		prot = new Prototype();
 		prot.addListner(this);
-		
+		Util.path = "c:\\temp\\tms";
+			
 		//TimeIdle
 		taskIdleTime = new Task(){
 			boolean isDone;
@@ -144,10 +145,22 @@ public class TMS implements ButtonListener{
 				}while(true);
 			}
 		}).start();	
+		
+		func = new Function();
+		if(func.hasDataInFile()){
+			if(prot.showMessageChoice("Carregar pelo hist", "Restaurar", "/resources/prisoner-32.png") == 1);
+				func.readFileInfo();
+				updateFields();
+		}
 	}
 	
 	@Override
 	public boolean onCheckout() {
+		return onCheckout(0);
+	}
+	
+	@Override
+	public boolean onCheckout(long preTime) {
 		CustomTime custon = new CustomTime();
 		
 		if(!custon.showDialog()){
@@ -155,7 +168,7 @@ public class TMS implements ButtonListener{
 		}
 		
 		Date customTime = custon.getCustomDate();			
-		
+				
 		try {
 			func.setFinalTime(customTime);
 		} catch (Exception e1) {
@@ -185,19 +198,34 @@ public class TMS implements ButtonListener{
 		long remainTime = func.updateTimeRemain(false, 0);
 		prot.textRemain.setText(Util.printTime(remainTime, "%sh %sm %ss"));
 							
-		prot.updateConsole(func.generateInfo());
+		prot.updateConsole(func.generateInfo());	
+		
+		func.writeCheckoutInfo();
+		func.writeSessionPack();
 		
 		return true;
 	}
 
 	@Override
 	public boolean onCheckin() {
-		CustomTime custon = new CustomTime();
-		
-		if(!custon.showDialog())
-			return false;
-		
-		Date customTime = custon.getCustomDate();	
+		return onCheckin(0);
+	};
+	
+	@Override
+	public boolean onCheckin(long preTime) {
+		Date customTime;
+		if(preTime == 0){
+			CustomTime custon = new CustomTime();		
+			if(!custon.showDialog())
+				return false;
+			
+			customTime = custon.getCustomDate();
+		}else{		
+			customTime = new Date(preTime);	
+			
+			prot.buttonInitialTime.setEnabled(false);
+			prot.buttonFinalTime.setEnabled(true);	
+		}
 		
 		func.setInitialTime(customTime);
 						
@@ -225,19 +253,33 @@ public class TMS implements ButtonListener{
 		prot.textEndTime.setText("");		
 		prot.txtSession.setText("Session sequence: "+ (func.getTimeSheet().getTimePacks().size()+1));	
 		
+		if(preTime == 0)
+			func.writeCheckinInfo();
+		
 		return true;
 	}
 
 	@Override
 	public boolean onNewTimeSheet() {
-		NewTimeSheet timesheet = new NewTimeSheet();
+		return onNewTimeSheet(false);
+	}
+	
+	@Override
+	public boolean onNewTimeSheet(boolean preLoaded) {
+
+		if(!preLoaded){		
+			NewTimeSheet timesheet = new NewTimeSheet();		
+			if(!timesheet.showDialog(clockUpdateInterval, updateSeconds))
+				return false;
+			updateSeconds = timesheet.getUpdateSeconds();
+			clockUpdateInterval = timesheet.getClockUpdateSeconds();
 		
-		if(!timesheet.showDialog(clockUpdateInterval, updateSeconds))
-			return false;
-		
-		updateSeconds = timesheet.getUpdateSeconds();
-		clockUpdateInterval = timesheet.getClockUpdateSeconds();
-						
+			func.setTimePerDay(timesheet.getTimePerDay());
+			func.setPredPause(timesheet.getTimeIdle());
+			
+			func.writeTimeSheetInfo();
+		}	
+	
 		if(updateThreadSimpleTime != null)
 			try {
 				taskUpdateTime.cancel();
@@ -245,16 +287,21 @@ public class TMS implements ButtonListener{
 			} catch (InterruptedException ex) {
 				ex.printStackTrace();
 			}
-		
-		func = new Function();				
-				
-		func.setTimePerDay(timesheet.getTimePerDay());
-		func.setPredPause(timesheet.getTimeIdle());
-		
+
 		prot.textTimeBase.setText(Util.printTime(func.getTimePerDay(), "%sh %sm %ss"));
-		prot.textPredPause.setText(Util.printTime(func.getPredPause(), "%sh %sm %ss"));
-		
+		prot.textPredPause.setText(Util.printTime(func.getPredPause(), "%sh %sm %ss"));		
+			
 		return true;
 	}
-
+	
+	public void updateFields(){
+		onNewTimeSheet(true);
+		
+		if(func.getTempTimePack().getStart() != 0)
+			onCheckin(func.getTempTimePack().getStart());
+		
+		prot.updateConsole(func.generateInfo());
+		
+			
+	}	
 }

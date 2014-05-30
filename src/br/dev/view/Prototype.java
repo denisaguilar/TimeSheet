@@ -1,6 +1,5 @@
 package br.dev.view;
 
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
@@ -45,26 +44,13 @@ public class Prototype {
 	public JLabel textPredicted;
 	public JLabel textPredPause;
 	
+	public JButton buttonInitialTime;
+	public JButton buttonFinalTime;
+	
 	public JTextPane txtSession;
 	public JTextArea lblhid;
 		
 	private ButtonListener listener;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Prototype window = new Prototype();
-					window.frmTimesheet.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
@@ -218,10 +204,11 @@ public class Prototype {
 		textPredPause.setBounds(316, 178, 76, 20);
 		frmTimesheet.getContentPane().add(textPredPause);
 			
-		final JButton buttonInitialTime = new JButton("Check-in");
+		buttonInitialTime = new JButton("Check-in");
 		buttonInitialTime.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		buttonInitialTime.setIcon(new ImageIcon(Prototype.class.getResource("/resources/591258-in-16.png")));
-		final JButton buttonFinalTime = new JButton("Check out ");
+		
+		buttonFinalTime = new JButton("Check out ");
 		buttonFinalTime.setIcon(new ImageIcon(Prototype.class.getResource("/resources/591248-out-16.png")));
 		buttonFinalTime.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		
@@ -262,7 +249,7 @@ public class Prototype {
 			public void actionPerformed(ActionEvent e) {	
 				if(!listener.onNewTimeSheet())
 					return;
-		
+						
 				buttonFinalTime.setEnabled(false);
 				console.setText("New TimeSheet Created.");
 				buttonInitialTime.setEnabled(true);				
@@ -346,15 +333,8 @@ public class Prototype {
 		mntmCheckOut.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK));
 		mnInfo.add(mntmCheckOut);
 		
-		JMenuItem mntmUpdateConsole = new JMenuItem("Update Console");
-		mntmUpdateConsole.setIcon(new ImageIcon(Prototype.class.getResource("/resources/update-16.png")));
-		mntmUpdateConsole.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-//				updateConsole();
-			}
-		});
-		mntmUpdateConsole.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
-		mnInfo.add(mntmUpdateConsole);
+		JMenu mnData = new JMenu("Data");
+		menuBar.add(mnData);
 		
 		JMenu mnAbout = new JMenu("About");
 		menuBar.add(mnAbout);
@@ -386,7 +366,11 @@ public class Prototype {
 		frmTimesheet.setVisible(true);
 	}
 	
-	public void showMessage(final String message, final String title, final String icon){
+	public int showMessageChoice(final String message, final String title, final String icon){
+		return JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(Prototype.class.getResource(icon)));
+	}
+	
+	public void showMessage(final String message, final String title, final String icon){		
 		Thread thread = new Thread(new Runnable() {
 			
 			@Override
