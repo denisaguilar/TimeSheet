@@ -35,7 +35,8 @@ public class TMS implements ButtonListener{
 	public TMS() {
 		prot = new Prototype();
 		prot.addListner(this);
-				
+		
+		//TimeIdle
 		taskIdleTime = new Task(){
 			boolean isDone;
 			
@@ -65,6 +66,7 @@ public class TMS implements ButtonListener{
 			
 		};
 		
+		//TimeElapsed, TimeRemainin
 		taskUpdateTime = new Task() {	
 			boolean isDone;
 						
@@ -96,13 +98,14 @@ public class TMS implements ButtonListener{
 			}
 		};
 		
+		//Clock
 		new Thread(new Runnable() {			
 			@Override
 			public void run() {
 				SimpleDateFormat format = new SimpleDateFormat("hh:mm a");
 				while(true){
 					try {					
-//						prot.labelHour.setText(format.format(new Date()));	
+						prot.labelHour.setText(format.format(new Date()));	
 						Thread.sleep(clockUpdateInterval * 1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -112,6 +115,8 @@ public class TMS implements ButtonListener{
 			}
 		}).start();
 		
+		
+		//Text Panel
 		new Thread(new Runnable() {			
 			@Override
 			public void run() {
@@ -138,7 +143,7 @@ public class TMS implements ButtonListener{
 				
 				}while(true);
 			}
-		}).start();
+		}).start();	
 	}
 	
 	@Override
@@ -180,17 +185,17 @@ public class TMS implements ButtonListener{
 		long remainTime = func.updateTimeRemain(false, 0);
 		prot.textRemain.setText(Util.printTime(remainTime, "%sh %sm %ss"));
 							
-		prot.updateConsole();
+		prot.updateConsole(func.generateInfo());
+		
 		return true;
 	}
 
 	@Override
-	public void onCheckin() {
+	public boolean onCheckin() {
 		CustomTime custon = new CustomTime();
 		
-		if(!custon.showDialog()){
-			return;
-		}
+		if(!custon.showDialog())
+			return false;
 		
 		Date customTime = custon.getCustomDate();	
 		
@@ -217,20 +222,21 @@ public class TMS implements ButtonListener{
 		long predictedTime = func.getTimeSheet().getTimePredicted();
 		prot.textPredicted.setText(func.formatDate(null, predictedTime));
 	
-		prot.textEndTime.setText("");
-		
+		prot.textEndTime.setText("");		
 		prot.txtSession.setText("Session sequence: "+ (func.getTimeSheet().getTimePacks().size()+1));	
+		
+		return true;
 	}
 
 	@Override
-	public void onNewTimeSheet() {
-		NewTimeSheet setTime = new NewTimeSheet();
+	public boolean onNewTimeSheet() {
+		NewTimeSheet timesheet = new NewTimeSheet();
 		
-		if(!setTime.showDialog(clockUpdateInterval, updateSeconds))
-			return;
+		if(!timesheet.showDialog(clockUpdateInterval, updateSeconds))
+			return false;
 		
-		updateSeconds = setTime.getUpdateSeconds();
-		clockUpdateInterval = setTime.getClockUpdateSeconds();
+		updateSeconds = timesheet.getUpdateSeconds();
+		clockUpdateInterval = timesheet.getClockUpdateSeconds();
 						
 		if(updateThreadSimpleTime != null)
 			try {
@@ -242,11 +248,13 @@ public class TMS implements ButtonListener{
 		
 		func = new Function();				
 				
-		func.setTimePerDay(setTime.getTimePerDay());
-		func.setPredPause(setTime.getTimeIdle());
+		func.setTimePerDay(timesheet.getTimePerDay());
+		func.setPredPause(timesheet.getTimeIdle());
 		
 		prot.textTimeBase.setText(Util.printTime(func.getTimePerDay(), "%sh %sm %ss"));
 		prot.textPredPause.setText(Util.printTime(func.getPredPause(), "%sh %sm %ss"));
+		
+		return true;
 	}
 
 }

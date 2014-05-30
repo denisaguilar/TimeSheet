@@ -93,8 +93,8 @@ public class CustomTime {
 		textSecond = new JTextField();
 		textSecond.setColumns(2);
 		textSecond.setBounds(190, 52, 34, 20);
-//		textSecond.setText(String.valueOf(Util.getSeconds(time)));
-		textSecond.setText("00");
+		textSecond.setText(String.valueOf(Util.getSeconds(time)));
+//		textSecond.setText("00");
 		textSecond.addFocusListener(new java.awt.event.FocusAdapter() {
 			public void focusGained(FocusEvent evt) {
 				SwingUtilities.invokeLater(new Runnable() {

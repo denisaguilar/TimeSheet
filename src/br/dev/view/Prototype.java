@@ -27,7 +27,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
 
-import br.dev.model.Function;
 import br.dev.model.Util;
 import br.dev.model.listener.ButtonListener;
 
@@ -48,19 +47,8 @@ public class Prototype {
 	
 	public JTextPane txtSession;
 	public JTextArea lblhid;
-	
-	
-	
-//	private static int wordPerSecond = 13;
-//	private static int updateSeconds = 1;
-//	private static int clockUpdateInterval = 5;
-//	
-//	private Thread updateThreadSimpleTime = null;
-//	private Thread updateThreadIdleTime = null;
-	
+		
 	private ButtonListener listener;
-	
-//	private Function func;
 
 	/**
 	 * Launch the application.
@@ -229,67 +217,7 @@ public class Prototype {
 		textPredPause.setEnabled(false);
 		textPredPause.setBounds(316, 178, 76, 20);
 		frmTimesheet.getContentPane().add(textPredPause);
-		
-//		final Task task2 = new Task(){
-//			boolean isDone;
-//			
-//			@Override
-//			public void run() {
-//				isDone = false;
-//				while(!isDone){
-//					try {
-//						Thread.sleep(updateSeconds * 1000);
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//					
-//					long value = func.updateTimeIdle(true, true, updateSeconds);
-//					textIdle.setText(Util.printTime(value, "%sh %sm %ss"));	
-//					
-//					if(value > func.getPredPause() && value < func.getPredPause() + 10){
-//						showMessage("Hey, Mandatory brake time is over, Back to Work!!", "Time Over!", "/resources/prisoner-32.png");			
-//					}
-//				}
-//			}
-//
-//			@Override
-//			public void cancel() {
-//				isDone = true;				
-//			}
-//			
-//		};
-//		
-//		final Task task = new Task() {	
-//			boolean isDone;
-//						
-//			@Override
-//			public void run() {
-//				isDone = false;
-//				while(!isDone){
-//					try {
-//						Thread.sleep(updateSeconds * 1000);
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//			
-//					long timeElapsed = func.updateTimeElapsed(true, updateSeconds);
-//					textElapsed.setText(Util.printTime(timeElapsed, "%sh %sm %ss"));
-//				
-//					long timeRemain = func.updateTimeRemain(true, updateSeconds);
-//					textRemain.setText(Util.printTime(timeRemain, "%sh %sm %ss"));	
-//					
-//					if(timeRemain < 0 && timeRemain > -1000){
-//						showMessage("Hey, work time is Over, Enjoy your Freedom!!", "Time Over!", "/resources/running64.png");					
-//					}
-//				}				
-//			}
-//			
-//			@Override
-//			public void cancel() {
-//				isDone = true;				
-//			}
-//		};
-				
+			
 		final JButton buttonInitialTime = new JButton("Check-in");
 		buttonInitialTime.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		buttonInitialTime.setIcon(new ImageIcon(Prototype.class.getResource("/resources/591258-in-16.png")));
@@ -301,52 +229,11 @@ public class Prototype {
 		buttonFinalTime.setEnabled(false);
 		buttonFinalTime.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(listener.onCheckout()){
-					buttonInitialTime.setEnabled(true);
-					buttonFinalTime.setEnabled(false);	
-				}
-//				CustomTime custon = new CustomTime();
-//				
-//				if(!custon.showDialog()){
-//					return;
-//				}
-//				
-//				Date customTime = custon.getCustomDate();			
-//				
-//				if(buttonFinalTime.isEnabled()){
-//										
-//					try {
-//						func.setFinalTime(customTime);
-//					} catch (Exception e1) {
-//						JOptionPane.showMessageDialog(null, "O tempo final não pode ser inferior ao inicial", "Erro de tempo", JOptionPane.WARNING_MESSAGE);
-//						return;
-//					}		
-//					
-//					long idleTime = func.updateTimeIdle(false, true, 0);
-//					textIdle.setText(Util.printTime(idleTime, "%sh %sm %ss"));
-//										
-//					try {
-//						task.cancel();
-//						updateThreadSimpleTime.join();
-//						
-//						updateThreadIdleTime = new Thread(task2);
-//						updateThreadIdleTime.start();
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//					
-//					long time = func.getTempTimePack().getEnd();
-//					textEndTime.setText(func.formatDate(null, time));
-//									
-//					long elapsedTime = func.updateTimeElapsed(false, 0);
-//					textElapsed.setText(Util.printTime(elapsedTime, "%sh %sm %ss"));
-//					
-//					long remainTime = func.updateTimeRemain(false, 0);
-//					textRemain.setText(Util.printTime(remainTime, "%sh %sm %ss"));
-//										
-//					updateConsole();
-//					
-//				}
+				if(!listener.onCheckout())
+					return;
+				
+				buttonInitialTime.setEnabled(true);
+				buttonFinalTime.setEnabled(false);				
 			}
 		});
 		buttonFinalTime.setBounds(284, 11, 106, 23);
@@ -355,44 +242,13 @@ public class Prototype {
 		buttonInitialTime.setEnabled(false);
 		buttonInitialTime.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				listener.onCheckin();
-//				CustomTime custon = new CustomTime();
-//				
-//				if(!custon.showDialog()){
-//					return;
-//				}
-//				
-//				Date customTime = custon.getCustomDate();	
-//				
-//				func.setInitialTime(customTime);
-//								
-//				try {
-//					if(updateThreadIdleTime != null){
-//						task2.cancel();
-//						updateThreadSimpleTime.join();
-//					}
-//					
-//					updateThreadSimpleTime = new Thread(task);					
-//					updateThreadSimpleTime.start();
-//				} catch (InterruptedException e1) {
-//					e1.printStackTrace();
-//				}	
-//				
-//				long idleTime = func.updateTimeIdle(false, false,0);
-//				textIdle.setText(Util.printTime(idleTime, "%sh %sm %ss"));
-//				
-//				long time = func.getTempTimePack().getStart();					
-//				textStartTime.setText(func.formatDate(null, time));
-//				
-//				long predictedTime = func.getTimeSheet().getTimePredicted();
-//				textPredicted.setText(func.formatDate(null, predictedTime));
-//										
+				if(!listener.onCheckin())
+					return;
+					
 				buttonInitialTime.setEnabled(false);
 				buttonFinalTime.setEnabled(true);	
-//				
-				textEndTime.setText("");				
-//				txtSession.setText("Session sequence: "+ (func.getTimeSheet().getTimePacks().size()+1));	
-//								
+			
+				textEndTime.setText("");								
 			}
 		});
 		
@@ -404,31 +260,10 @@ public class Prototype {
 		buttonTimeSheet.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		buttonTimeSheet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {	
-				listener.onNewTimeSheet();
-//				NewTimeSheet setTime = new NewTimeSheet();
-//				
-//				if(!setTime.showDialog(clockUpdateInterval, updateSeconds))
-//					return;
-//				
-//				updateSeconds = setTime.getUpdateSeconds();
-//				clockUpdateInterval = setTime.getClockUpdateSeconds();
-//								
-//				if(updateThreadSimpleTime != null)
-//					try {
-//						task.cancel();
-//						updateThreadSimpleTime.join();
-//					} catch (InterruptedException ex) {
-//						ex.printStackTrace();
-//					}
-//				
-//				func = new Function();				
+				if(!listener.onNewTimeSheet())
+					return;
+		
 				buttonFinalTime.setEnabled(false);
-//				
-//				func.setTimePerDay(setTime.getTimePerDay());
-//				func.setPredPause(setTime.getTimeIdle());
-//				textTimeBase.setText(Util.printTime(func.getTimePerDay(), "%sh %sm %ss"));
-//				label_PredPause.setText(Util.printTime(func.getPredPause(), "%sh %sm %ss"));
-//				
 				console.setText("New TimeSheet Created.");
 				buttonInitialTime.setEnabled(true);				
 				
@@ -450,29 +285,13 @@ public class Prototype {
 		lblTimeBase.setBounds(23, 177, 90, 20);
 		frmTimesheet.getContentPane().add(lblTimeBase);
 		
-		final JLabel labelHour = new JLabel();
+		labelHour = new JLabel();
 		labelHour.setHorizontalAlignment(SwingConstants.RIGHT);
 		labelHour.setText("0h 0m 0s");
 		labelHour.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		labelHour.setEnabled(false);
 		labelHour.setBounds(330, 493, 60, 20);
 		frmTimesheet.getContentPane().add(labelHour);
-		
-//		new Thread(new Runnable() {			
-//			@Override
-//			public void run() {
-//				SimpleDateFormat format = new SimpleDateFormat("hh:mm a");
-//				while(true){
-//					try {					
-//						labelHour.setText(format.format(new Date()));	
-//						Thread.sleep(clockUpdateInterval * 1000);
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//				}
-//
-//			}
-//		}).start();
 				
 		JLabel lblNow = new JLabel("Now");
 		lblNow.setIcon(new ImageIcon(Prototype.class.getResource("/resources/icon-ios7-clock-outline-16.png")));
@@ -488,36 +307,7 @@ public class Prototype {
 		lblhid.setEditable(false);
 		lblhid.setLineWrap(true);
 		lblhid.setFont(new Font("Segoe UI Semibold", Font.BOLD, 11));
-				
-//		new Thread(new Runnable() {			
-//			@Override
-//			public void run() {
-//				do{
-//					try {
-//						Thread.sleep(1000 * 5);
-//						String[] text = Util.getText();
-//						for (int i = 0; i < text.length; i++) {
-//							String[] t = text[i].split("#"); 
-//							lblhid.setText(t[0]);
-//							
-//							if(t.length == 1){
-//								Thread.sleep(1000 * text[i].split("").length / wordPerSecond);
-//							}else{
-//								Thread.sleep(1000 * Integer.parseInt(t[1]));
-//							}
-//						}					
-//						
-//						lblhid.setText("");
-//						
-//					} catch (InterruptedException e) {
-//						lblhid.setText("ERROR!");
-//					}				
-//				
-//				}while(true);
-//			}
-//		}).start();
-		
-				
+
 		JMenuBar menuBar = new JMenuBar();
 		frmTimesheet.setJMenuBar(menuBar);
 		
@@ -560,7 +350,7 @@ public class Prototype {
 		mntmUpdateConsole.setIcon(new ImageIcon(Prototype.class.getResource("/resources/update-16.png")));
 		mntmUpdateConsole.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				updateConsole();
+//				updateConsole();
 			}
 		});
 		mntmUpdateConsole.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK));
@@ -612,11 +402,11 @@ public class Prototype {
 		thread.start();
 	}
 	
-	public void updateConsole(){
-//		if(func != null)
-//			console.setText(func.generateInfo());
-//		else{
-//			console.setText("Go ahead... make my day.");
-//		}
+	public void updateConsole(String info){
+		if(info != null)
+			console.setText(info);
+		else{
+			console.setText("Go ahead... make my day.");
+		}
 	}	
 }
