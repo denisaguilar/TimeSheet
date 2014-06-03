@@ -139,9 +139,9 @@ public class Function {
 				temp += Util.toSeconds(updateFrequence);
 				idleTime = temp;
 			}else{
-				idleTime = timeSheet.getIdleTime();
-				TimePack tp = tps.get(tps.size() -1);
+				idleTime = timeSheet.getIdleTime();				
 				if(now){
+					TimePack tp = tps.get(tps.size() -1);
 					idleTime += (new Date().getTime() - tp.getEnd());
 				}else{
 					long totalIdle = 0;
@@ -176,8 +176,6 @@ public class Function {
 		String format = "dd/MM/yyyy hh:mm:ss a";
 		StringBuffer sb = new StringBuffer();
 		sb.append(System.getProperty("java.io.tmpdir"));
-		
-		//SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		
 		sb.append("\n..::TimeSheet Console ::..");
 		

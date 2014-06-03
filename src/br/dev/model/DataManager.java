@@ -135,14 +135,18 @@ public class DataManager {
 				if(obj.get("seq") == null){
 					pw.println(line);					
 				}
-			}
-				
-			br.close();
+			}				
+			
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally{			
-			pw.flush();
-			pw.close();		
+		}finally{	
+			try {
+				br.close();
+				pw.flush();
+				pw.close();		
+			} catch (IOException e) {
+				e.printStackTrace();
+			}			
 		}
 		
 		file.delete();

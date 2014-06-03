@@ -149,7 +149,7 @@ public class TMS implements ButtonListener{
 		
 		dataManager = new DataManager();
 		if(dataManager.hasDataInFile()){
-			if(prot.showMessageChoice("Load from DB ?", "Restaurar", "/resources/prisoner-32.png") == 0){
+			if(prot.showMessageChoice("Restore previous data from DB ?", "Restaurar", "/resources/database-32.png") == 0){
 				dataManager.readFileInfo();
 				updateTMS();
 			}
@@ -218,7 +218,7 @@ public class TMS implements ButtonListener{
 			try {
 				func.setFinalTime(customTime);
 			} catch (Exception e1) {
-				JOptionPane.showMessageDialog(null, "O tempo final não pode ser inferior ao inicial", "Erro de tempo", JOptionPane.WARNING_MESSAGE);
+				prot.showMessage("The final time can not be longer than the initial time!", "Wow", "/resources/policeman-32.png");
 				return false;
 			}			
 		}	
