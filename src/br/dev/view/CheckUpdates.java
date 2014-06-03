@@ -1,6 +1,5 @@
 package br.dev.view;
 
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -13,6 +12,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.StringTokenizer;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -20,8 +20,6 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import br.dev.model.Util;
-
-import javax.swing.ImageIcon;
 
 
 public class CheckUpdates {
@@ -47,22 +45,6 @@ public class CheckUpdates {
 		
 	private static String newVersion;
 	private JSeparator separator;
-	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					CheckUpdates window = new CheckUpdates();
-					window.showDialog();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the application.
@@ -158,12 +140,13 @@ public class CheckUpdates {
 				responseBytes = Util.inputStreamToByteArray(is);
 			} catch (IOException e1) {
 				lblMsg.setText("No internet connection avaliable!");
+				return true;			
+			}finally{
 				try {
-					Thread.sleep(800);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
 			}
 
 			String downloadedString = new String(responseBytes);
@@ -196,7 +179,7 @@ public class CheckUpdates {
 		try {
 			Thread.sleep(800);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			return true;
 		}
 		
 		return true;

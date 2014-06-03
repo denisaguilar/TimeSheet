@@ -7,8 +7,8 @@ public class TimePack {
 	private long end;	
 	private long interval;
 		
-	public void setInterval(long interval) {
-		this.interval = interval;
+	public void updateInterval() {
+		this.interval = end - start;;
 	}
 	public long getStart() {
 		return start;
@@ -20,8 +20,7 @@ public class TimePack {
 		return end;
 	}
 	public void setEnd(long end) {
-		this.end = end;
-		this.interval = end - start;
+		this.end = end;		
 	}
 	
 	public long getInterval() {

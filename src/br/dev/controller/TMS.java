@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 
 import com.sun.jmx.snmp.tasks.Task;
 
+import br.dev.model.DataManager;
 import br.dev.model.Function;
 import br.dev.model.Util;
 import br.dev.model.listener.ButtonListener;
@@ -17,13 +18,14 @@ import br.dev.view.Prototype;
 public class TMS implements ButtonListener{
 	private Prototype prot;
 	private Function func;
+	private DataManager dataManager;
 		
 	private static int wordPerSecond = 13;
 	private static int updateSeconds = 1;
 	private static int clockUpdateInterval = 5;
 	
 	private Task taskIdleTime;
-	private Task taskUpdateTime;
+	private Task taskSimpleTime;
 	
 	private Thread updateThreadSimpleTime = null;
 	private Thread updateThreadIdleTime = null;
@@ -35,7 +37,6 @@ public class TMS implements ButtonListener{
 	public TMS() {
 		prot = new Prototype();
 		prot.addListner(this);
-		Util.path = "c:\\temp\\tms";
 			
 		//TimeIdle
 		taskIdleTime = new Task(){
@@ -68,7 +69,7 @@ public class TMS implements ButtonListener{
 		};
 		
 		//TimeElapsed, TimeRemainin
-		taskUpdateTime = new Task() {	
+		taskSimpleTime = new Task() {	
 			boolean isDone;
 						
 			@Override
@@ -146,51 +147,89 @@ public class TMS implements ButtonListener{
 			}
 		}).start();	
 		
-		func = new Function();
-		if(func.hasDataInFile()){
-			if(prot.showMessageChoice("Carregar pelo hist", "Restaurar", "/resources/prisoner-32.png") == 1);
-				func.readFileInfo();
-				updateFields();
+		dataManager = new DataManager();
+		if(dataManager.hasDataInFile()){
+			if(prot.showMessageChoice("Load from DB ?", "Restaurar", "/resources/prisoner-32.png") == 0){
+				dataManager.readFileInfo();
+				updateTMS();
+			}
 		}
 	}
 	
-	@Override
-	public boolean onCheckout() {
-		return onCheckout(0);
-	}
-	
-	@Override
-	public boolean onCheckout(long preTime) {
-		CustomTime custon = new CustomTime();
-		
-		if(!custon.showDialog()){
-			return false;
-		}
-		
-		Date customTime = custon.getCustomDate();			
-				
+	private void onCheckoutThreadManager(){
 		try {
-			func.setFinalTime(customTime);
-		} catch (Exception e1) {
-			JOptionPane.showMessageDialog(null, "O tempo final não pode ser inferior ao inicial", "Erro de tempo", JOptionPane.WARNING_MESSAGE);
-			return false;
-		}		
-		
-		long idleTime = func.updateTimeIdle(false, true, 0);
-		prot.textIdle.setText(Util.printTime(idleTime, "%sh %sm %ss"));
-							
-		try {
-			taskUpdateTime.cancel();
-			updateThreadSimpleTime.join();
+			if(updateThreadSimpleTime != null){
+				taskSimpleTime.cancel();
+				updateThreadSimpleTime.join();
+			}
 			
 			updateThreadIdleTime = new Thread(taskIdleTime);
 			updateThreadIdleTime.start();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void onChekinThreadManager(){
+		try {
+			if(updateThreadIdleTime != null){
+				taskIdleTime.cancel();
+				updateThreadIdleTime.join();
+			}
+			
+			updateThreadSimpleTime = new Thread(taskSimpleTime);					
+			updateThreadSimpleTime.start();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}	
+	}
+	
+	private void onNewTimeSheetThreadManager(){
+		if(updateThreadSimpleTime != null)
+			try {
+				taskSimpleTime.cancel();
+				updateThreadSimpleTime.join();
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
+			}
+	}
+	
+	@Override
+	public boolean onCheckout() {
+		return onCheckout(false);
+	}
+	
+	@Override
+	public boolean onCheckout(boolean preloaded) {		
+		if(preloaded){
+			long startTime = func.getTempTimePack().getStart();
+			prot.textStartTime.setText(func.formatDate(null, startTime));	
+						
+			long predictedTime = func.getTimeSheet().getTimePredicted();
+			prot.textPredicted.setText(func.formatDate(null, predictedTime));
+		} else{
+			CustomTime custon = new CustomTime();		
+			if(!custon.showDialog()){
+				return false;
+			}
+			
+			Date customTime = custon.getCustomDate();			
+					
+			try {
+				func.setFinalTime(customTime);
+			} catch (Exception e1) {
+				JOptionPane.showMessageDialog(null, "O tempo final não pode ser inferior ao inicial", "Erro de tempo", JOptionPane.WARNING_MESSAGE);
+				return false;
+			}			
+		}	
+			
+		onCheckoutThreadManager();
 		
-		long time = func.getTempTimePack().getEnd();
-		prot.textEndTime.setText(func.formatDate(null, time));
+		long idleTime = func.updateTimeIdle(false, true, 0);
+		prot.textIdle.setText(Util.printTime(idleTime, "%sh %sm %ss"));
+		
+		long endTime = func.getTempTimePack().getEnd();
+		prot.textEndTime.setText(func.formatDate(null, endTime));
 							
 		long elapsedTime = func.updateTimeElapsed(false, 0);
 		prot.textElapsed.setText(Util.printTime(elapsedTime, "%sh %sm %ss"));
@@ -199,47 +238,38 @@ public class TMS implements ButtonListener{
 		prot.textRemain.setText(Util.printTime(remainTime, "%sh %sm %ss"));
 							
 		prot.updateConsole(func.generateInfo());	
-		
-		func.writeCheckoutInfo();
-		func.writeSessionPack();
+
+		if(!preloaded)
+			new DataManager(func).writeSessionPack();
 		
 		return true;
 	}
 
 	@Override
 	public boolean onCheckin() {
-		return onCheckin(0);
+		return onCheckin(false);
 	};
 	
 	@Override
-	public boolean onCheckin(long preTime) {
+	public boolean onCheckin(boolean preLoaded) {
 		Date customTime;
-		if(preTime == 0){
+		
+		if(preLoaded){
+			customTime = new Date(dataManager.getTp().getStart());	
+			
+			prot.buttonInitialTime.setEnabled(false);
+			prot.buttonFinalTime.setEnabled(true);	
+		}else{			
 			CustomTime custon = new CustomTime();		
 			if(!custon.showDialog())
 				return false;
 			
-			customTime = custon.getCustomDate();
-		}else{		
-			customTime = new Date(preTime);	
-			
-			prot.buttonInitialTime.setEnabled(false);
-			prot.buttonFinalTime.setEnabled(true);	
+			customTime = custon.getCustomDate();			
 		}
 		
 		func.setInitialTime(customTime);
-						
-		try {
-			if(updateThreadIdleTime != null){
-				taskIdleTime.cancel();
-				updateThreadSimpleTime.join();
-			}
-			
-			updateThreadSimpleTime = new Thread(taskUpdateTime);					
-			updateThreadSimpleTime.start();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}	
+		
+		onChekinThreadManager();
 		
 		long idleTime = func.updateTimeIdle(false, false,0);
 		prot.textIdle.setText(Util.printTime(idleTime, "%sh %sm %ss"));
@@ -253,8 +283,8 @@ public class TMS implements ButtonListener{
 		prot.textEndTime.setText("");		
 		prot.txtSession.setText("Session sequence: "+ (func.getTimeSheet().getTimePacks().size()+1));	
 		
-		if(preTime == 0)
-			func.writeCheckinInfo();
+		if(!preLoaded)
+			new DataManager(func).writeCheckinInfo();
 		
 		return true;
 	}
@@ -266,42 +296,46 @@ public class TMS implements ButtonListener{
 	
 	@Override
 	public boolean onNewTimeSheet(boolean preLoaded) {
-
-		if(!preLoaded){		
+		func = new Function();
+		
+		if(preLoaded){					
+			func.setTimePerDay(dataManager.getTimePerDay());
+			func.setPredPause(dataManager.getPredPause());
+			
+			prot.buttonInitialTime.setEnabled(true);
+		}else{
 			NewTimeSheet timesheet = new NewTimeSheet();		
-			if(!timesheet.showDialog(clockUpdateInterval, updateSeconds))
+			
+			if(!timesheet.showDialog())
 				return false;
+			
 			updateSeconds = timesheet.getUpdateSeconds();
 			clockUpdateInterval = timesheet.getClockUpdateSeconds();
-		
+						
 			func.setTimePerDay(timesheet.getTimePerDay());
-			func.setPredPause(timesheet.getTimeIdle());
+			func.setPredPause(timesheet.getPredPause());
 			
-			func.writeTimeSheetInfo();
-		}	
-	
-		if(updateThreadSimpleTime != null)
-			try {
-				taskUpdateTime.cancel();
-				updateThreadSimpleTime.join();
-			} catch (InterruptedException ex) {
-				ex.printStackTrace();
-			}
+			new DataManager(func).writeTimeSheetInfo();		
+		}
+			
+		onNewTimeSheetThreadManager();
 
 		prot.textTimeBase.setText(Util.printTime(func.getTimePerDay(), "%sh %sm %ss"));
 		prot.textPredPause.setText(Util.printTime(func.getPredPause(), "%sh %sm %ss"));		
-			
+				
 		return true;
 	}
 	
-	public void updateFields(){
+	private void updateTMS(){
 		onNewTimeSheet(true);
 		
-		if(func.getTempTimePack().getStart() != 0)
-			onCheckin(func.getTempTimePack().getStart());
-		
-		prot.updateConsole(func.generateInfo());
-		
+		if(dataManager.getTs().getTimePacks().size() != 0){
+			func.setTimeSheet(dataManager.getTs());
+			func.setTempTimePack(dataManager.getLastTP());
+			onCheckout(true);	
+		}if(dataManager.getTp().getStart() != 0)
+			onCheckin(true);
 			
+		prot.updateConsole(func.generateInfo());			
 	}	
 }

@@ -30,9 +30,9 @@ import java.awt.Font;
 public class NewTimeSheet{
 
 	private long timeDay;
-	private long timeIdle;
-	private int updateSeconds;
-	private int clockUpdateSecods;
+	private long predPause;
+	private int updateSeconds = 1;
+	private int clockUpdateSecods = 5;
 	
 	JDialog dialog;
 	boolean isDone;
@@ -45,8 +45,8 @@ public class NewTimeSheet{
 	private JTextField textTimeIdleM;
 	private JTextField textTimeIdleS;
 	
-	public long getTimeIdle(){
-		return timeIdle;
+	public long getPredPause(){
+		return predPause;
 	}
 
 	public long getTimePerDay() {
@@ -75,8 +75,8 @@ public class NewTimeSheet{
 	 * Create the application.
 	 * @wbp.parser.entryPoint
 	 */
-	
-	public boolean showDialog(int clockUpdate, int updateSeconds) {	
+
+	public boolean showDialog() {	
 				
 		dialog = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
 		dialog.setTitle("New TimeSheet");
@@ -88,10 +88,7 @@ public class NewTimeSheet{
 				super.windowClosed(e);
 			}			
 		});
-		
-		this.updateSeconds = updateSeconds;
-		this.clockUpdateSecods = clockUpdate;
-		
+				
 		dialog.setBounds(100, 100, 342, 212);
 		dialog.getContentPane().setLayout(null);
 		dialog.setLocationRelativeTo(null);
@@ -217,7 +214,7 @@ public class NewTimeSheet{
 					
 					Date dateZero = sdf.parse("00:00:00");					
 					timeDay = Util.convertTime(timeBase.getTime() - dateZero.getTime());
-					timeIdle = Util.convertTime(timeI.getTime() - dateZero.getTime());
+					predPause = Util.convertTime(timeI.getTime() - dateZero.getTime());
 					
 					if(!textUpdate.getText().isEmpty())
 						setUpdateSeconds(Integer.parseInt(textUpdate.getText()));
