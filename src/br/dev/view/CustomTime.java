@@ -77,7 +77,6 @@ public class CustomTime {
 		textMinute.setBounds(105, 52, 34, 20);
 		textMinute.setText(String.valueOf(Util.getMinuts(time)));
 		dialog.getContentPane().add(textMinute);
-		// text will be selected when field gains focus
 		textMinute.addFocusListener(new java.awt.event.FocusAdapter() {
 			public void focusGained(FocusEvent evt) {
 				SwingUtilities.invokeLater(new Runnable() {

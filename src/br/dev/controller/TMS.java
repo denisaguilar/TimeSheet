@@ -3,10 +3,6 @@ package br.dev.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.JOptionPane;
-
-import com.sun.jmx.snmp.tasks.Task;
-
 import br.dev.model.DataManager;
 import br.dev.model.Function;
 import br.dev.model.Util;
@@ -14,6 +10,8 @@ import br.dev.model.listener.ButtonListener;
 import br.dev.view.CustomTime;
 import br.dev.view.NewTimeSheet;
 import br.dev.view.Prototype;
+
+import com.sun.jmx.snmp.tasks.Task;
 
 public class TMS implements ButtonListener{
 	private Prototype prot;
@@ -55,7 +53,7 @@ public class TMS implements ButtonListener{
 					long value = func.updateTimeIdle(true, true, updateSeconds);
 					prot.textIdle.setText(Util.printTime(value, "%sh %sm %ss"));	
 					
-					if(value > func.getPredPause() && value < func.getPredPause() + 10){
+					if(value > func.getPredPause() && value < func.getPredPause() + 1000){
 						prot.showMessage("Hey, Mandatory brake time is over, Back to Work!!", "Time Over!", "/resources/prisoner-32.png");			
 					}
 				}
@@ -68,7 +66,6 @@ public class TMS implements ButtonListener{
 			
 		};
 		
-		//TimeElapsed, TimeRemainin
 		taskSimpleTime = new Task() {	
 			boolean isDone;
 						
