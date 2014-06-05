@@ -11,4 +11,6 @@ public interface ButtonListener extends EventListener {
 	
 	public boolean onNewTimeSheet();
 	public boolean onNewTimeSheet(boolean preloaded);
+	
+	public void dailyBackup();
 }

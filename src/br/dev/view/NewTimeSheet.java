@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import br.dev.model.Util;
+import br.dev.model.business.Util;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;

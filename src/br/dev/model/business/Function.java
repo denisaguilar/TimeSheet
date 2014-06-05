@@ -1,8 +1,11 @@
-package br.dev.model;
+package br.dev.model.business;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import br.dev.model.time.TimePack;
+import br.dev.model.time.TimeSheet;
 
 public class Function {
 		
@@ -95,7 +98,7 @@ public class Function {
 			throw new Exception();						
 		}
 		
-		if(date ==  null)
+		if(date == null)
 			tempTimePack.setEnd(new Date().getTime());
 		else
 			tempTimePack.setEnd(date.getTime());

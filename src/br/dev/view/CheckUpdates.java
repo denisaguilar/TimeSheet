@@ -19,7 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
-import br.dev.model.Util;
+import br.dev.model.business.Util;
 
 
 public class CheckUpdates {

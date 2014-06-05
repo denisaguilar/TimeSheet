@@ -1,4 +1,4 @@
-package br.dev.model;
+package br.dev.model.business;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 
 public class Util {
 	
-	private static final String VERSION_NUMBER = "0.6.1";
+	private static final String VERSION_NUMBER = "0.6.2";
 	
 	private static final String VERSION = "http://goo.gl/ITOFrf";
 	private static final String RELEASE = "http://goo.gl/HIyL7M";

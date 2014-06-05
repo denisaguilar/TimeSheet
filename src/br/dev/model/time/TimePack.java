@@ -1,4 +1,4 @@
-package br.dev.model;
+package br.dev.model.time;
 
 
 public class TimePack {

@@ -1,10 +1,12 @@
-package br.dev.model;
+package br.dev.model.business;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.Calendar;
@@ -12,6 +14,9 @@ import java.util.Locale;
 
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+
+import br.dev.model.time.TimePack;
+import br.dev.model.time.TimeSheet;
 
 public class DataManager {
 	
@@ -114,6 +119,26 @@ public class DataManager {
 		obj.put("seq", ts.getTimePacks().size());
 		obj.put("o", tp.getEnd());
 		writeFileInfo(obj.toJSONString());
+	}
+	
+	public void dailyBackup(){
+		File file = null;
+		
+		try {
+			file = directoryManager();
+			SaveFileChooser sfc = new SaveFileChooser(null, null, "TMS Data");
+			sfc.setFileName(file.getName());
+			
+			if(sfc.showDialog()){			
+				OutputStream os = new FileOutputStream(sfc.getSelectedFile());						
+				Files.copy(file.toPath(), os);				
+				os.flush();
+				os.close();
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void removeLines(){
@@ -232,18 +257,28 @@ public class DataManager {
 		}
 	}
 	
+	private File getYearFile(File basePath, Calendar cal){
+		int year = cal.get(Calendar.YEAR);		
+		return new File(basePath,String.valueOf(year));
+	}
+	
+	private File getMonthFile(File basePath, Calendar cal){
+		String month = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
+		return new File(basePath,month);
+	}
+	
+	private File getDayFile(File basePath, Calendar cal){
+		return new File(basePath, cal.get(Calendar.DAY_OF_MONTH)+"_"+cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
+	}
+	
 	private File directoryManager() throws IOException{
 		File basePath = new File(System.getProperty("java.io.tmpdir"), ".tms");
 		
 		Calendar cal = Calendar.getInstance();
-		
-		int year = cal.get(Calendar.YEAR);		
-		File yearPath = new File(basePath,String.valueOf(year));
-		
-		String month = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
-		File monthPath = new File(yearPath,month);
-		
-		File dayPath = new File(monthPath, cal.get(Calendar.DAY_OF_MONTH)+"_"+cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault()));
+					
+		File yearPath = getYearFile(basePath, cal);
+		File monthPath = getMonthFile(yearPath, cal);		
+		File dayPath = getDayFile(monthPath, cal);
 		
 		if(!dayPath.exists()){
 			dayPath.getParentFile().mkdirs();

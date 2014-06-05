@@ -3,9 +3,9 @@ package br.dev.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import br.dev.model.DataManager;
-import br.dev.model.Function;
-import br.dev.model.Util;
+import br.dev.model.business.DataManager;
+import br.dev.model.business.Function;
+import br.dev.model.business.Util;
 import br.dev.model.listener.ButtonListener;
 import br.dev.view.CustomTime;
 import br.dev.view.NewTimeSheet;
@@ -335,4 +335,9 @@ public class TMS implements ButtonListener{
 			
 		prot.updateConsole(func.generateInfo());			
 	}	
+	
+	@Override
+	public void dailyBackup() {
+		dataManager.dailyBackup();		
+	}
 }

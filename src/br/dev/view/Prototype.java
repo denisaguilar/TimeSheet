@@ -26,7 +26,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
 
-import br.dev.model.Util;
+import br.dev.model.business.Util;
 import br.dev.model.listener.ButtonListener;
 
 public class Prototype {
@@ -51,6 +51,7 @@ public class Prototype {
 	public JTextArea lblhid;
 		
 	private ButtonListener listener;
+	private JMenuItem mntmDailyBackup;
 
 	/**
 	 * Create the application.
@@ -336,11 +337,24 @@ public class Prototype {
 		JMenu mnData = new JMenu("Data");
 		menuBar.add(mnData);
 		
+		mntmDailyBackup = new JMenuItem("Daily Backup");
+		mntmDailyBackup.setIcon(new ImageIcon(Prototype.class.getResource("/resources/day-16.png")));
+		mntmDailyBackup.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				listener.dailyBackup();
+			}
+		});
+		mnData.add(mntmDailyBackup);
+		
+		JMenuItem mntmMonthBackup = new JMenuItem("Month Backup");
+		mntmMonthBackup.setIcon(new ImageIcon(Prototype.class.getResource("/resources/month-16.png")));
+		mnData.add(mntmMonthBackup);
+		
 		JMenu mnAbout = new JMenu("About");
 		menuBar.add(mnAbout);
 		
 		JMenuItem mntmVerifyUpdates = new JMenuItem("Check for updates");
-		mntmVerifyUpdates.setIcon(new ImageIcon(Prototype.class.getResource("/resources/519929-27_Cloud-16.png")));
+		mntmVerifyUpdates.setIcon(new ImageIcon(Prototype.class.getResource("/resources/cloud-16.png")));
 		mnAbout.add(mntmVerifyUpdates);
 		mntmVerifyUpdates.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK));
 		mntmVerifyUpdates.addActionListener(new ActionListener() {
