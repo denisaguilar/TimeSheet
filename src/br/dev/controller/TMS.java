@@ -35,7 +35,7 @@ public class TMS implements ButtonListener{
 	public TMS() {
 		prot = new Prototype();
 		prot.addListner(this);
-			
+						
 		//TimeIdle
 		taskIdleTime = new Task(){
 			boolean isDone;
@@ -292,19 +292,20 @@ public class TMS implements ButtonListener{
 	}
 	
 	@Override
-	public boolean onNewTimeSheet(boolean preLoaded) {
-		func = new Function();
-		
-		if(preLoaded){					
+	public boolean onNewTimeSheet(boolean preLoaded) {				
+		if(preLoaded){		
+			func = new Function();
 			func.setTimePerDay(dataManager.getTimePerDay());
 			func.setPredPause(dataManager.getPredPause());
 			
 			prot.buttonInitialTime.setEnabled(true);
 		}else{
 			NewTimeSheet timesheet = new NewTimeSheet();		
-			
+						
 			if(!timesheet.showDialog())
 				return false;
+			
+			func = new Function();
 			
 			updateSeconds = timesheet.getUpdateSeconds();
 			clockUpdateInterval = timesheet.getClockUpdateSeconds();
