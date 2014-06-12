@@ -178,7 +178,6 @@ public class Function {
 	public String generateInfo() {
 		String format = "dd/MM/yyyy hh:mm:ss a";
 		StringBuffer sb = new StringBuffer();
-		sb.append(System.getProperty("java.io.tmpdir"));
 		
 		sb.append("\n..::TimeSheet Console ::..");
 		
