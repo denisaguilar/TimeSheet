@@ -146,7 +146,7 @@ public class TMS implements ButtonListener{
 		
 		dataManager = new DataManager();
 		if(dataManager.hasDataInFile()){
-			if(prot.showMessageChoice("Restore previous data from DB ?", "Restaurar", "/resources/database-32.png") == 0){
+			if(prot.showMessageChoice("Restore previous data from DB ?", "Restore", "/resources/database-32.png") == 0){
 				dataManager.readFileInfo();
 				updateTMS();
 			}

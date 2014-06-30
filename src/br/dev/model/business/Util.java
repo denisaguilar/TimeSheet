@@ -9,11 +9,11 @@ import java.nio.charset.Charset;
 
 public class Util {
 	
-	private static final String VERSION_NUMBER = "0.6.3";
+	private static final String VERSION_NUMBER = "0.6.4";
 	
-	private static final String VERSION = "http://goo.gl/ITOFrf";
-	private static final String RELEASE = "http://goo.gl/HIyL7M";
-	private static final String NOTE = "https://dl.dropboxusercontent.com/s/679o3vc9vpbu9ic/notes.txt?dl=1&token_hash=AAH_xZjPF-criYOzyOJ2jjLa6TFg_Lxz38LHideK9V42Ig&expiry=1399572065";
+	private static final String VERSION = "https://www.dropbox.com/s/rxppaoxo9tbmow2/version.txt?dl=1";
+	private static final String RELEASE = "https://www.dropbox.com/s/a4eps87lokjh6x1/time_sheet.jar?dl=1";
+	private static final String NOTE = "https://www.dropbox.com/s/679o3vc9vpbu9ic/notes.txt?dl=1";
 	
 	private static long second = 1000;
 	private static long minute = (60 * 1000);
