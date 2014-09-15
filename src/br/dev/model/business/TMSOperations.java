@@ -7,7 +7,7 @@ import java.util.List;
 import br.dev.model.time.TimePack;
 import br.dev.model.time.TimeSheet;
 
-public class Function {
+public class TMSOperations {
 		
 	private long timePerDay;
 	private long predPause;	
@@ -49,7 +49,7 @@ public class Function {
 		return tempTimePack;
 	}
 
-	public Function() {
+	public TMSOperations() {
 		timeSheet = TimeSheet.getInstance();
 		tempTimePack = new TimePack();		
 	}

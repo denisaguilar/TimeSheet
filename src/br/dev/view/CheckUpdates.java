@@ -18,6 +18,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 import br.dev.model.business.Util;
 
@@ -73,7 +74,7 @@ public class CheckUpdates {
 		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(CheckUpdates.class.getResource("/resources/519929-27_Cloud-16.png")));
 		dialog.setResizable(false);
 		dialog.setBounds(100, 100, 311, 162);
-		dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		dialog.getContentPane().setLayout(null);
 		dialog.setLocationRelativeTo(null);
 		lblMsg.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
@@ -87,6 +88,7 @@ public class CheckUpdates {
 		btnOk.setBounds(206, 99, 89, 23);
 		btnOk.setVisible(false);
 		btnOk.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				lblMsg.setText("Download new version...");
 				

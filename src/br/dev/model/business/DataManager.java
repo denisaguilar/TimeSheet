@@ -68,7 +68,7 @@ public class DataManager {
 		ts = new TimeSheet();
 	}
 
-	public DataManager(Function function) {
+	public DataManager(TMSOperations function) {
 		super();
 		setTs(function.getTimeSheet());
 		setTp(function.getTempTimePack());	

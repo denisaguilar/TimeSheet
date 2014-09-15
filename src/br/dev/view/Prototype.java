@@ -216,6 +216,7 @@ public class Prototype {
 		
 		buttonFinalTime.setEnabled(false);
 		buttonFinalTime.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				if(!listener.onCheckout())
 					return;
@@ -229,6 +230,7 @@ public class Prototype {
 		
 		buttonInitialTime.setEnabled(false);
 		buttonInitialTime.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(!listener.onCheckin())
 					return;
@@ -247,6 +249,7 @@ public class Prototype {
 		buttonTimeSheet.setIcon(new ImageIcon(Prototype.class.getResource("/resources/menu-alt-16.png")));
 		buttonTimeSheet.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 		buttonTimeSheet.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {	
 				if(!listener.onNewTimeSheet())
 					return;
@@ -311,6 +314,7 @@ public class Prototype {
 		JMenuItem mntmNewTimesheet = new JMenuItem("New TimeSheet");
 		mntmNewTimesheet.setIcon(new ImageIcon(Prototype.class.getResource("/resources/menu-alt-16.png")));
 		mntmNewTimesheet.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				buttonTimeSheet.doClick();
 			}
@@ -319,6 +323,7 @@ public class Prototype {
 		mnInfo.add(mntmNewTimesheet);
 		
 		mntmCheckin.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				buttonInitialTime.doClick();
 			}
@@ -327,6 +332,7 @@ public class Prototype {
 		mnInfo.add(mntmCheckin);
 		
 		mntmCheckOut.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				buttonFinalTime.doClick();
 			}
@@ -340,6 +346,7 @@ public class Prototype {
 		mntmDailyBackup = new JMenuItem("Daily Backup");
 		mntmDailyBackup.setIcon(new ImageIcon(Prototype.class.getResource("/resources/day-16.png")));
 		mntmDailyBackup.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				listener.dailyBackup();
 			}
@@ -358,6 +365,7 @@ public class Prototype {
 		mnAbout.add(mntmVerifyUpdates);
 		mntmVerifyUpdates.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK));
 		mntmVerifyUpdates.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				CheckUpdates check = new CheckUpdates();				
 				check.showDialog();
@@ -371,6 +379,7 @@ public class Prototype {
 		mnAbout.add(mntmAbout);
 		mntmAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK));
 		mntmAbout.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				console.setText("\n TimeSheet 2014 - Version "+Util.getVersionNumber()+" \n Source: https://github.com/denisaguilar/TimeSheet"+ "\n\n Back to Console (Ctrl+Z)");
 			}

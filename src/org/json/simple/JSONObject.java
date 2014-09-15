@@ -52,6 +52,7 @@ public class JSONObject extends HashMap implements Map, JSONAware, JSONStreamAwa
 		out.write('}');
 	}
 
+	@Override
 	public void writeJSONString(Writer out) throws IOException{
 		writeJSONString(this, out);
 	}
@@ -87,6 +88,7 @@ public class JSONObject extends HashMap implements Map, JSONAware, JSONStreamAwa
 		return sb.toString();
 	}
 	
+	@Override
 	public String toJSONString(){
 		return toJSONString(this);
 	}
@@ -104,6 +106,7 @@ public class JSONObject extends HashMap implements Map, JSONAware, JSONStreamAwa
 		return sb.toString();
 	}
 	
+	@Override
 	public String toString(){
 		return toJSONString();
 	}

@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import br.dev.model.business.DataManager;
-import br.dev.model.business.Function;
+import br.dev.model.business.TMSOperations;
 import br.dev.model.business.Util;
 import br.dev.model.listener.ButtonListener;
 import br.dev.view.CustomTime;
@@ -15,7 +15,7 @@ import com.sun.jmx.snmp.tasks.Task;
 
 public class TMS implements ButtonListener{
 	private Prototype prot;
-	private Function func;
+	private TMSOperations func;
 	private DataManager dataManager;
 		
 	private static int wordPerSecond = 13;
@@ -294,7 +294,7 @@ public class TMS implements ButtonListener{
 	@Override
 	public boolean onNewTimeSheet(boolean preLoaded) {				
 		if(preLoaded){		
-			func = new Function();
+			func = new TMSOperations();
 			func.setTimePerDay(dataManager.getTimePerDay());
 			func.setPredPause(dataManager.getPredPause());
 			
@@ -305,7 +305,7 @@ public class TMS implements ButtonListener{
 			if(!timesheet.showDialog())
 				return false;
 			
-			func = new Function();
+			func = new TMSOperations();
 			
 			updateSeconds = timesheet.getUpdateSeconds();
 			clockUpdateInterval = timesheet.getClockUpdateSeconds();

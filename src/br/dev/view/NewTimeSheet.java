@@ -203,6 +203,7 @@ public class NewTimeSheet{
 		dialog.getRootPane().setDefaultButton(btnSave);
 		btnSave.addActionListener(new ActionListener() {
 					
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
 				Date timeBase = null;
@@ -237,6 +238,7 @@ public class NewTimeSheet{
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/cancel-16.png")));
 		btnCancel.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				dialog.setVisible(false);
 			}
@@ -255,6 +257,7 @@ public class NewTimeSheet{
 		textTimeIdleH.setColumns(2);
 		textTimeIdleH.setBounds(181, 60, 29, 20);
 		textTimeIdleH.addFocusListener(new java.awt.event.FocusAdapter() {
+			@Override
 			public void focusGained(FocusEvent evt) {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
@@ -277,6 +280,7 @@ public class NewTimeSheet{
 		textTimeIdleM.setColumns(2);
 		textTimeIdleM.setBounds(223, 60, 29, 20);
 		textTimeIdleM.addFocusListener(new java.awt.event.FocusAdapter() {
+			@Override
 			public void focusGained(FocusEvent evt) {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
@@ -299,6 +303,7 @@ public class NewTimeSheet{
 		textTimeIdleS.setColumns(2);
 		textTimeIdleS.setBounds(269, 60, 29, 20);
 		textTimeIdleS.addFocusListener(new java.awt.event.FocusAdapter() {
+			@Override
 			public void focusGained(FocusEvent evt) {
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
