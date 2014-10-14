@@ -1,9 +1,12 @@
 package br.dev.view;
 
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.ParseException;
@@ -11,23 +14,25 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import br.dev.model.JTextFieldLimit;
+import br.dev.model.KeyListenerLimit;
 import br.dev.model.business.Util;
 
-import java.awt.Toolkit;
-
-import javax.swing.ImageIcon;
-import javax.swing.JSeparator;
-
-public class CustomTime {
-
+public class CustomTime{
 
 	private Date customDate;
 	private boolean isDone;
@@ -35,11 +40,12 @@ public class CustomTime {
 	private JTextField textMinute;
 	private JTextField textSecond;
 	private JTextField textHour;
+
 	/**
 	 * Create the application.
 	 */
 
-	public Date getCustomDate(){
+	public Date getCustomDate() {
 		return customDate;
 	}
 
@@ -48,6 +54,7 @@ public class CustomTime {
 
 	/**
 	 * Initialize the contents of the frame.
+	 *
 	 * @wbp.parser.entryPoint
 	 */
 	public boolean showDialog() {
@@ -64,36 +71,36 @@ public class CustomTime {
 
 		long time = date.getTime() - dateZero.getTime();
 
-
 		dialog = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
 		dialog.setTitle("Custom Time");
-		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(CustomTime.class.getResource("/resources/calendar-16.png")));
+		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(
+				CustomTime.class.getResource("/resources/calendar-16.png")));
 		dialog.setResizable(false);
 		dialog.setBounds(100, 100, 326, 170);
 		dialog.getContentPane().setLayout(null);
 		dialog.setLocationRelativeTo(null);
 
-		textMinute = new JTextField();
-		textMinute.setBounds(105, 52, 34, 20);
-		textMinute.setText(String.valueOf(Util.getMinuts(time)));
-		dialog.getContentPane().add(textMinute);
-		textMinute.addFocusListener(new java.awt.event.FocusAdapter() {
+		final KeyStroke escapeStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+		final String dispatchWindowClosingActionMapKey = "com.spodding.tackline.dispatch:WINDOW_CLOSING";
+		dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(escapeStroke, dispatchWindowClosingActionMapKey);
+
+		Action dispatchClosing = new AbstractAction() {
 			@Override
-			public void focusGained(FocusEvent evt) {
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						textMinute.selectAll();
-					}
-				});
+			public void actionPerformed(ActionEvent e) {
+				dialog.dispatchEvent(new WindowEvent(dialog,
+						WindowEvent.WINDOW_CLOSING));
 			}
-		});
-		textMinute.setColumns(2);
+		};
+
+		dialog.getRootPane().getActionMap().put(dispatchWindowClosingActionMapKey, dispatchClosing);
+
 
 		textSecond = new JTextField();
 		textSecond.setColumns(2);
 		textSecond.setBounds(190, 52, 34, 20);
-//		textSecond.setText(String.valueOf(Util.getSeconds(time)));
+		textSecond.setDocument(new JTextFieldLimit(2));
+		// textSecond.setText(String.valueOf(Util.getSeconds(time)));
 		textSecond.setText("00");
 		textSecond.addFocusListener(new java.awt.event.FocusAdapter() {
 			@Override
@@ -108,10 +115,33 @@ public class CustomTime {
 		});
 		dialog.getContentPane().add(textSecond);
 
+		textMinute = new JTextField();
+		textMinute.setBounds(105, 52, 34, 20);
+		textMinute.setDocument(new JTextFieldLimit(2));
+		textMinute.setText(String.valueOf(Util.getMinuts(time)));
+
+		dialog.getContentPane().add(textMinute);
+
+		textMinute.addKeyListener(new KeyListenerLimit(2, textSecond));
+		textMinute.addFocusListener(new java.awt.event.FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent evt) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						textMinute.selectAll();
+					}
+				});
+			}
+		});
+		textMinute.setColumns(2);
+
 		textHour = new JTextField();
 		textHour.setColumns(2);
 		textHour.setBounds(23, 52, 34, 20);
+		textHour.setDocument(new JTextFieldLimit(2));
 		textHour.setText(String.valueOf(Util.getHours(time)));
+		textHour.addKeyListener(new KeyListenerLimit(2, textMinute));
 		// text will be selected when field gains focus
 		textHour.addFocusListener(new java.awt.event.FocusAdapter() {
 			@Override
@@ -127,7 +157,8 @@ public class CustomTime {
 		dialog.getContentPane().add(textHour);
 
 		JButton btnOk = new JButton("Ok");
-		btnOk.setIcon(new ImageIcon(CustomTime.class.getResource("/resources/checkmark-24-16.png")));
+		btnOk.setIcon(new ImageIcon(CustomTime.class
+				.getResource("/resources/checkmark-24-16.png")));
 		dialog.getRootPane().setDefaultButton(btnOk);
 
 		btnOk.addActionListener(new ActionListener() {
@@ -135,15 +166,20 @@ public class CustomTime {
 			public void actionPerformed(ActionEvent arg0) {
 				Calendar cal = Calendar.getInstance();
 
-				cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(textHour.getText()));
+				cal.set(Calendar.HOUR_OF_DAY,
+						Integer.parseInt(textHour.getText()));
 				cal.set(Calendar.MINUTE, Integer.parseInt(textMinute.getText()));
 				cal.set(Calendar.SECOND, Integer.parseInt(textSecond.getText()));
 
 				customDate = cal.getTime();
 
-				if(customDate.getTime() > new Date().getTime()){
-					JOptionPane.showMessageDialog(null, "The final time can not be longer than the initial time!", "Wow", JOptionPane.WARNING_MESSAGE);
-				}else{
+				if (customDate.getTime() > new Date().getTime()) {
+					JOptionPane
+							.showMessageDialog(
+									null,
+									"The final time can not be longer than the initial time!",
+									"Wow", JOptionPane.WARNING_MESSAGE);
+				} else {
 					dialog.setVisible(false);
 					isDone = true;
 				}
@@ -153,7 +189,8 @@ public class CustomTime {
 		dialog.getContentPane().add(btnOk);
 
 		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setIcon(new ImageIcon(CustomTime.class.getResource("/resources/cancel-16.png")));
+		btnCancel.setIcon(new ImageIcon(CustomTime.class
+				.getResource("/resources/cancel-16.png")));
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

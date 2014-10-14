@@ -4,6 +4,8 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,11 +14,15 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.util.StringTokenizer;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
@@ -24,14 +30,14 @@ import br.dev.model.business.Util;
 
 
 public class CheckUpdates {
-	
+
 //	static{
-//		new Thread(new Runnable() {			
+//		new Thread(new Runnable() {
 //			@Override
 //			public void run() {
 //				if(!isUpToDate()){
-//					btnOk.setEnabled(true);	
-//					btnOk.setVisible(true);			
+//					btnOk.setEnabled(true);
+//					btnOk.setVisible(true);
 //				}else{
 //					dialog.dispose();
 //				}
@@ -43,7 +49,7 @@ public class CheckUpdates {
 	private static boolean isDone;
 	private static JLabel lblMsg = new JLabel("Check for updates..");
 	private static JButton btnOk;
-		
+
 	private static String newVersion;
 	private JSeparator separator;
 
@@ -56,19 +62,19 @@ public class CheckUpdates {
 	 * @wbp.parser.entryPoint
 	 */
 	public boolean showDialog() {
-		
-		new Thread(new Runnable() {			
+
+		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				if(!isUpToDate()){
-					btnOk.setEnabled(true);	
-					btnOk.setVisible(true);			
+					btnOk.setEnabled(true);
+					btnOk.setVisible(true);
 				}else{
 					dialog.dispose();
 				}
 			}
 		}).start();
-		
+
 		dialog = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
 		dialog.setTitle("Check for updates");
 		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(CheckUpdates.class.getResource("/resources/519929-27_Cloud-16.png")));
@@ -77,11 +83,27 @@ public class CheckUpdates {
 		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		dialog.getContentPane().setLayout(null);
 		dialog.setLocationRelativeTo(null);
+
+		final KeyStroke escapeStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+		final String dispatchWindowClosingActionMapKey = "com.spodding.tackline.dispatch:WINDOW_CLOSING";
+		dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+				.put(escapeStroke, dispatchWindowClosingActionMapKey);
+
+		Action dispatchClosing = new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dialog.dispatchEvent(new WindowEvent(dialog,
+						WindowEvent.WINDOW_CLOSING));
+			}
+		};
+
+		dialog.getRootPane().getActionMap().put(dispatchWindowClosingActionMapKey, dispatchClosing);
+
 		lblMsg.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
-				
+
 		lblMsg.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMsg.setBounds(10, 59, 285, 14);
-		
+
 		btnOk = new JButton("Update");
 		btnOk.setIcon(new ImageIcon(CheckUpdates.class.getResource("/resources/519624-123_CloudDownload-16.png")));
 		dialog.getRootPane().setDefaultButton(btnOk);
@@ -91,50 +113,50 @@ public class CheckUpdates {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				lblMsg.setText("Download new version...");
-				
+
 				try {
 					URL url = new URL(Util.getRelease());
 					InputStream is = url.openStream();
-					
+
 					File file = new File(System.getProperty("user.dir")+"\\TMS-"+newVersion+".jar");
 					OutputStream os = new FileOutputStream(file);
 					os.write(Util.inputStreamToByteArray(is));
-					
+
 					os.flush();
 					os.close();
-					
+
 					Runtime runTime = Runtime.getRuntime();
 					runTime.exec("java -jar "+file.getAbsoluteFile());
-										
-					System.exit(0);				
+
+					System.exit(0);
 				} catch (IOException e1) {
 					e1.printStackTrace();
-				}			
+				}
 			}
-		});		
-		
+		});
+
 		dialog.getContentPane().add(btnOk);
-		
-		
+
+
 		dialog.getContentPane().add(lblMsg);
-		
+
 		separator = new JSeparator();
 		separator.setBounds(15, 84, 275, 2);
 		dialog.getContentPane().add(separator);
-		
+
 		JLabel labelVersion = new JLabel("TimeSheet Version "+Util.getVersionNumber());
 		labelVersion.setHorizontalAlignment(SwingConstants.CENTER);
 		labelVersion.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		labelVersion.setBounds(10, 34, 285, 14);
 		dialog.getContentPane().add(labelVersion);
 		dialog.setVisible(true);
-			
-		return isDone;				
+
+		return isDone;
 	}
-	
+
 	private static boolean isUpToDate(){
 		byte[] responseBytes = null;
-		
+
 			URL url;
 			try {
 				url = new URL(Util.getVersion());
@@ -142,7 +164,7 @@ public class CheckUpdates {
 				responseBytes = Util.inputStreamToByteArray(is);
 			} catch (IOException e1) {
 				lblMsg.setText("No internet connection avaliable!");
-				return true;			
+				return true;
 			}finally{
 				try {
 					Thread.sleep(1000);
@@ -183,7 +205,7 @@ public class CheckUpdates {
 		} catch (InterruptedException e) {
 			return true;
 		}
-		
+
 		return true;
 	}
 }
