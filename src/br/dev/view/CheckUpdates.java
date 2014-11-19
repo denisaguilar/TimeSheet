@@ -31,20 +31,6 @@ import br.dev.model.business.Util;
 
 public class CheckUpdates {
 
-//	static{
-//		new Thread(new Runnable() {
-//			@Override
-//			public void run() {
-//				if(!isUpToDate()){
-//					btnOk.setEnabled(true);
-//					btnOk.setVisible(true);
-//				}else{
-//					dialog.dispose();
-//				}
-//			}
-//		}).start();
-//	}
-
 	private static JDialog dialog;
 	private static boolean isDone;
 	private static JLabel lblMsg = new JLabel("Check for updates..");
@@ -61,6 +47,7 @@ public class CheckUpdates {
 	 * Initialize the contents of the frame.
 	 * @wbp.parser.entryPoint
 	 */
+	@SuppressWarnings("serial")
 	public boolean showDialog() {
 
 		new Thread(new Runnable() {

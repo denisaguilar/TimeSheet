@@ -26,6 +26,7 @@ public class Util {
 		long diffSeconds = getSeconds(timeMilli);
 		long diffMinutes = getMinuts(timeMilli);
 		long diffHours = getHours(timeMilli);
+		@SuppressWarnings("unused")
 		long diffDays = getDay(timeMilli);
 
 		return String.format(format, diffHours, diffMinutes, diffSeconds);
