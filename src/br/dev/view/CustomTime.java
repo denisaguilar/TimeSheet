@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.ParseException;
@@ -28,9 +27,9 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import br.dev.controller.business.Util;
 import br.dev.model.JTextFieldLimit;
 import br.dev.model.KeyListenerLimit;
-import br.dev.model.business.Util;
 
 public class CustomTime{
 
@@ -57,6 +56,7 @@ public class CustomTime{
 	 *
 	 * @wbp.parser.entryPoint
 	 */
+	@SuppressWarnings("serial")
 	public boolean showDialog() {
 		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
 

@@ -26,24 +26,10 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import br.dev.model.business.Util;
+import br.dev.controller.business.Util;
 
 
 public class CheckUpdates {
-
-//	static{
-//		new Thread(new Runnable() {
-//			@Override
-//			public void run() {
-//				if(!isUpToDate()){
-//					btnOk.setEnabled(true);
-//					btnOk.setVisible(true);
-//				}else{
-//					dialog.dispose();
-//				}
-//			}
-//		}).start();
-//	}
 
 	private static JDialog dialog;
 	private static boolean isDone;
@@ -61,6 +47,7 @@ public class CheckUpdates {
 	 * Initialize the contents of the frame.
 	 * @wbp.parser.entryPoint
 	 */
+	@SuppressWarnings("serial")
 	public boolean showDialog() {
 
 		new Thread(new Runnable() {

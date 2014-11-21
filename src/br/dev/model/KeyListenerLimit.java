@@ -2,7 +2,6 @@ package br.dev.model;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.BitSet;
 
 import javax.swing.JTextField;
 
@@ -22,12 +21,10 @@ public class KeyListenerLimit implements KeyListener {
 		if(nextPress == predSize){
 			complete = true;
 		}
-
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-
 	}
 
 	@Override
