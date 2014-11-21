@@ -1,4 +1,4 @@
-package br.dev.model.business;
+package br.dev.controller.business;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.nio.charset.Charset;
 
 public class Util {
 
-	private static final String VERSION_NUMBER = "0.6.5";
+	private static final String VERSION_NUMBER = "0.6.6";
 
 	private static final String VERSION = "https://www.dropbox.com/s/rxppaoxo9tbmow2/version.txt?dl=1";
 	private static final String RELEASE = "https://www.dropbox.com/s/a4eps87lokjh6x1/time_sheet.jar?dl=1";
@@ -26,6 +26,7 @@ public class Util {
 		long diffSeconds = getSeconds(timeMilli);
 		long diffMinutes = getMinuts(timeMilli);
 		long diffHours = getHours(timeMilli);
+		@SuppressWarnings("unused")
 		long diffDays = getDay(timeMilli);
 
 		return String.format(format, diffHours, diffMinutes, diffSeconds);

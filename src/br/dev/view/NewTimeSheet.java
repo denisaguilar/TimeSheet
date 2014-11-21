@@ -1,7 +1,11 @@
 package br.dev.view;
 
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -11,6 +15,7 @@ import java.util.Date;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -22,18 +27,8 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import br.dev.controller.business.Util;
 import br.dev.model.KeyListenerLimit;
-import br.dev.model.business.Util;
-
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.Toolkit;
-
-import javax.swing.ImageIcon;
-
-import sun.font.CreatedFontTracker;
-
-import java.awt.Font;
 
 public class NewTimeSheet {
 
@@ -83,6 +78,7 @@ public class NewTimeSheet {
 	 * @wbp.parser.entryPoint
 	 */
 
+	@SuppressWarnings("serial")
 	public boolean showDialog() {
 
 		dialog = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
