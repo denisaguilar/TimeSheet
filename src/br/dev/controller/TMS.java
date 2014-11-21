@@ -3,9 +3,9 @@ package br.dev.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import br.dev.model.business.DataManager;
-import br.dev.model.business.OperationCore;
-import br.dev.model.business.Util;
+import br.dev.controller.business.DataManager;
+import br.dev.controller.business.OperationCore;
+import br.dev.controller.business.Util;
 import br.dev.model.listener.ButtonListener;
 import br.dev.view.CustomTime;
 import br.dev.view.NewTimeSheet;
@@ -13,7 +13,6 @@ import br.dev.view.Prototype;
 
 import com.sun.jmx.snmp.tasks.Task;
 
-@SuppressWarnings("restriction")
 public class TMS implements ButtonListener{
 	private Prototype prot;
 	private OperationCore func;

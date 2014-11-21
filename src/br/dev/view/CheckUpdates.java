@@ -26,7 +26,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import br.dev.model.business.Util;
+import br.dev.controller.business.Util;
 
 
 public class CheckUpdates {

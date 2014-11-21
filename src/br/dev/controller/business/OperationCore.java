@@ -1,4 +1,4 @@
-package br.dev.model.business;
+package br.dev.controller.business;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package br.dev.model.business;
+package br.dev.controller.business;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,11 +11,12 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import org.apache.commons.io.FileUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
 import br.dev.model.time.TimePack;
 import br.dev.model.time.TimeSheet;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class DataManager {
 
@@ -75,49 +76,52 @@ public class DataManager {
 		setPredPause(function.getPredPause());
 	}
 
-	@SuppressWarnings("unchecked")
 	public void writeSessionPack(){
 		removeLines();
 
-		JSONObject obj = new JSONObject();
+		JsonObject obj = new JsonObject();
 
-		obj.put("s", ts.getTimePacks().size());
-		obj.put("i", tp.getStart());
-		obj.put("o", tp.getEnd());
+		obj.addProperty("s", ts.getTimePacks().size());
+		obj.addProperty("i", tp.getStart());
+		obj.addProperty("o", tp.getEnd());
 
-		obj.put("in", tp.getInterval());
+		obj.addProperty("in", tp.getInterval());
 
-		obj.put("it", ts.getIdleTime());
-		obj.put("te",ts.getTimeElapsed());
-		obj.put("tr",ts.getTimeRemain());
-		obj.put("tp", ts.getTimePredicted());
+		obj.addProperty("it", ts.getIdleTime());
+		obj.addProperty("te",ts.getTimeElapsed());
+		obj.addProperty("tr",ts.getTimeRemain());
+		obj.addProperty("tp", ts.getTimePredicted());
 
-		writeFileInfo(obj.toJSONString());
+		writeFileInfo(new Gson().toJson(obj));
 	}
 
-	@SuppressWarnings("unchecked")
 	public void writeTimeSheetInfo(){
-		JSONObject obj = new JSONObject();
-		obj.put("wt", timePerDay);
-		obj.put("pp", predPause);
+		JsonObject obj = new JsonObject();
+
+		obj.addProperty("wt", timePerDay);
+		obj.addProperty("pp", predPause);
+
 		cleanFile();
-		writeFileInfo(obj.toJSONString());
+
+		writeFileInfo(new Gson().toJson(obj));
 	}
 
-	@SuppressWarnings("unchecked")
 	public void writeCheckinInfo(){
-		JSONObject obj = new JSONObject();
-		obj.put("seq", ts.getTimePacks().size()+1);
-		obj.put("i", tp.getStart());
-		writeFileInfo(obj.toJSONString());
+		JsonObject obj = new JsonObject();
+
+		obj.addProperty("seq", ts.getTimePacks().size()+1);
+		obj.addProperty("i", tp.getStart());
+
+		writeFileInfo(new Gson().toJson(obj));
 	}
 
-	@SuppressWarnings("unchecked")
 	public void writeCheckoutInfo(){
-		JSONObject obj = new JSONObject();
-		obj.put("seq", ts.getTimePacks().size());
-		obj.put("o", tp.getEnd());
-		writeFileInfo(obj.toJSONString());
+		JsonObject obj = new JsonObject();
+
+		obj.addProperty("seq", ts.getTimePacks().size());
+		obj.addProperty("o", tp.getEnd());
+
+		writeFileInfo(new Gson().toJson(obj));
 	}
 
 	public void dailyBackup(){
@@ -175,7 +179,9 @@ public class DataManager {
 
 			String line = null;
 			while(br.ready() && (line = br.readLine()) != null){
-				JSONObject obj = (JSONObject) JSONValue.parse(line);
+				Gson gson = new Gson();
+				JsonObject obj = gson.fromJson(line, JsonObject.class);
+
 				if(obj.get("seq") == null){
 					pw.println(line);
 				}
@@ -242,25 +248,26 @@ public class DataManager {
 			br = new BufferedReader(new FileReader(file));
 			String line;
 			while((line = br.readLine()) != null){
-				JSONObject obj = (JSONObject) JSONValue.parse(line);
+				Gson gson = new Gson();
+				JsonObject obj = gson.fromJson(line, JsonObject.class);
 
 				if(obj != null){
 					if(obj.get("pp") != null && obj.get("wt") != null){
-						setTimePerDay((long)obj.get("wt"));
-						setPredPause((long)obj.get("pp"));
+						setTimePerDay(obj.get("wt").getAsLong());
+						setPredPause((obj.get("pp").getAsLong()));
 					}else if(obj.get("seq") != null){
-						tp.setStart((long)obj.get("i"));
+						tp.setStart(obj.get("i").getAsLong());
 					}else if(obj.get("s") != null){
 						TimePack tp = new TimePack();
-						tp.setStart((long)obj.get("i"));
-						tp.setEnd((long)obj.get("o"));
+						tp.setStart(obj.get("i").getAsLong());
+						tp.setEnd(obj.get("o").getAsLong());
 						tp.updateInterval();
 
 						ts.getTimePacks().add(tp);
-						ts.setIdleTime((long)obj.get("it"));
-						ts.setTimeElapsed((long)obj.get("te"));
-						ts.setTimeRemain((long)obj.get("tr"));
-						ts.setTimePredicted((long)obj.get("tp"));
+						ts.setIdleTime(obj.get("it").getAsLong());
+						ts.setTimeElapsed(obj.get("te").getAsLong());
+						ts.setTimeRemain((obj.get("tr").getAsLong()));
+						ts.setTimePredicted(obj.get("tp").getAsLong());
 					}
 				}
 			}

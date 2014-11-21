@@ -27,9 +27,9 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import br.dev.controller.business.Util;
 import br.dev.model.JTextFieldLimit;
 import br.dev.model.KeyListenerLimit;
-import br.dev.model.business.Util;
 
 public class CustomTime{
 

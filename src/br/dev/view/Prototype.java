@@ -26,8 +26,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.TitledBorder;
 
-import br.dev.model.business.Util;
+import br.dev.controller.business.Util;
 import br.dev.model.listener.ButtonListener;
+
 import javax.swing.JSeparator;
 
 public class Prototype {
@@ -356,6 +357,7 @@ public class Prototype {
 
 		JMenuItem mntmMonthlyBackup = new JMenuItem("Month Backup");
 		mntmMonthlyBackup.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				listener.monthlyBackup();
 			}
@@ -366,7 +368,8 @@ public class Prototype {
 		JSeparator separator = new JSeparator();
 		mnData.add(separator);
 
-		JMenuItem mntmGenTab = new JMenuItem("Gen Tab");
+		JMenuItem mntmGenTab = new JMenuItem("Generate Calendar");
+		mntmGenTab.setEnabled(false);
 		mnData.add(mntmGenTab);
 
 		JMenu mnAbout = new JMenu("About");
