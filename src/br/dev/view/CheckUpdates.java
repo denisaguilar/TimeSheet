@@ -12,8 +12,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.StringTokenizer;
 
+import javax.print.attribute.standard.JobSheets;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -26,6 +28,9 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
+import org.apache.commons.io.FileUtils;
+
+import br.dev.controller.business.DataManager;
 import br.dev.controller.business.Util;
 
 
@@ -105,15 +110,17 @@ public class CheckUpdates {
 					URL url = new URL(Util.getRelease());
 					InputStream is = url.openStream();
 
-					File file = new File(System.getProperty("user.dir")+"\\TMS-"+newVersion+".jar");
-					OutputStream os = new FileOutputStream(file);
-					os.write(Util.inputStreamToByteArray(is));
+					File basePath = DataManager.getBasePath();
 
-					os.flush();
-					os.close();
+					File fileDest = new File(
+							new File(System.getProperty("user.dir")+"\\TMS-"+newVersion+".jar"),
+							"TMS-"+newVersion+".jar"
+						);
+
+					FileUtils.writeByteArrayToFile(fileDest, Util.inputStreamToByteArray(is));
 
 					Runtime runTime = Runtime.getRuntime();
-					runTime.exec("java -jar "+file.getAbsoluteFile());
+					runTime.exec("java -jar "+fileDest.getAbsoluteFile());
 
 					System.exit(0);
 				} catch (IOException e1) {

@@ -315,7 +315,7 @@ public class DataManager {
 		return dayPath;
 	}
 
-	private File getBasePath(){
+	public static File getBasePath(){
 		return new File(System.getProperty("java.io.tmpdir"), ".tms");
 	}
 }
