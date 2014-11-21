@@ -58,7 +58,7 @@ public class DataManager {
 		return tp;
 	}
 
-	public TimePack getLastTP(){
+	public TimePack getLastTP() {
 		return ts.getTimePacks().get(ts.getTimePacks().size() - 1);
 	}
 
@@ -76,7 +76,7 @@ public class DataManager {
 		setPredPause(function.getPredPause());
 	}
 
-	public void writeSessionPack(){
+	public void writeSessionPack() {
 		removeLines();
 
 		JsonObject obj = new JsonObject();
@@ -88,14 +88,14 @@ public class DataManager {
 		obj.addProperty("in", tp.getInterval());
 
 		obj.addProperty("it", ts.getIdleTime());
-		obj.addProperty("te",ts.getTimeElapsed());
-		obj.addProperty("tr",ts.getTimeRemain());
+		obj.addProperty("te", ts.getTimeElapsed());
+		obj.addProperty("tr", ts.getTimeRemain());
 		obj.addProperty("tp", ts.getTimePredicted());
 
 		writeFileInfo(new Gson().toJson(obj));
 	}
 
-	public void writeTimeSheetInfo(){
+	public void writeTimeSheetInfo() {
 		JsonObject obj = new JsonObject();
 
 		obj.addProperty("wt", timePerDay);
@@ -106,16 +106,16 @@ public class DataManager {
 		writeFileInfo(new Gson().toJson(obj));
 	}
 
-	public void writeCheckinInfo(){
+	public void writeCheckinInfo() {
 		JsonObject obj = new JsonObject();
 
-		obj.addProperty("seq", ts.getTimePacks().size()+1);
+		obj.addProperty("seq", ts.getTimePacks().size() + 1);
 		obj.addProperty("i", tp.getStart());
 
 		writeFileInfo(new Gson().toJson(obj));
 	}
 
-	public void writeCheckoutInfo(){
+	public void writeCheckoutInfo() {
 		JsonObject obj = new JsonObject();
 
 		obj.addProperty("seq", ts.getTimePacks().size());
@@ -124,7 +124,7 @@ public class DataManager {
 		writeFileInfo(new Gson().toJson(obj));
 	}
 
-	public void dailyBackup(){
+	public void dailyBackup() {
 		File fileScr = null;
 
 		try {
@@ -132,7 +132,7 @@ public class DataManager {
 			SaveFileChooser sfc = new SaveFileChooser(null, null, "TMS Data");
 			sfc.setFileName(fileScr.getName());
 
-			if(sfc.showDialog()){
+			if (sfc.showDialog()) {
 				FileUtils.copyFile(fileScr, sfc.getSelectedFile());
 			}
 
@@ -143,28 +143,28 @@ public class DataManager {
 
 	public void monthlyBackup() {
 
-		try{
+		try {
 			Calendar cal = Calendar.getInstance();
 
 			File fileScr = getMonthFile(cal);
 
-			if(!fileScr.isDirectory())
+			if (!fileScr.isDirectory())
 				throw new Exception("Invalid directory path");
 
 			SaveFileChooser sfc = new SaveFileChooser(null, null, fileScr.getName());
 
-			if(sfc.showDialog()){
+			if (sfc.showDialog()) {
 				File fileDst = new File(sfc.getSelectedFile(), fileScr.getName());
 				FileUtils.copyDirectory(fileScr, fileDst);
 			}
 
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 	}
 
-	private void removeLines(){
+	private void removeLines() {
 		BufferedReader br = null;
 		PrintWriter pw = null;
 		File file = null;
@@ -172,24 +172,24 @@ public class DataManager {
 
 		try {
 			file = directoryManager();
-			tempFile = new File(file.toPath()+".temp");
+			tempFile = new File(file.toPath() + ".temp");
 
 			br = new BufferedReader(new FileReader(file));
 			pw = new PrintWriter(new FileWriter(tempFile));
 
 			String line = null;
-			while(br.ready() && (line = br.readLine()) != null){
+			while (br.ready() && (line = br.readLine()) != null) {
 				Gson gson = new Gson();
 				JsonObject obj = gson.fromJson(line, JsonObject.class);
 
-				if(obj.get("seq") == null){
+				if (obj.get("seq") == null) {
 					pw.println(line);
 				}
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally{
+		} finally {
 			try {
 				br.close();
 				pw.flush();
@@ -203,7 +203,7 @@ public class DataManager {
 		tempFile.renameTo(file);
 	}
 
-	private void cleanFile(){
+	private void cleanFile() {
 		try {
 			directoryManager().delete();
 		} catch (IOException e) {
@@ -211,7 +211,7 @@ public class DataManager {
 		}
 	}
 
-	private void writeFileInfo(String text){
+	private void writeFileInfo(String text) {
 		File file;
 		PrintWriter pw = null;
 
@@ -223,13 +223,13 @@ public class DataManager {
 			pw.println();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally{
+		} finally {
 			pw.flush();
 			pw.close();
 		}
 	}
 
-	public boolean hasDataInFile(){
+	public boolean hasDataInFile() {
 		File file = null;
 		try {
 			file = directoryManager();
@@ -240,24 +240,24 @@ public class DataManager {
 		return (file == null || file.length() > 0);
 	}
 
-	public void readFileInfo(){
+	public void readFileInfo() {
 		BufferedReader br = null;
 		try {
 			File file = directoryManager();
 
 			br = new BufferedReader(new FileReader(file));
 			String line;
-			while((line = br.readLine()) != null){
+			while ((line = br.readLine()) != null) {
 				Gson gson = new Gson();
 				JsonObject obj = gson.fromJson(line, JsonObject.class);
 
-				if(obj != null){
-					if(obj.get("pp") != null && obj.get("wt") != null){
+				if (obj != null) {
+					if (obj.get("pp") != null && obj.get("wt") != null) {
 						setTimePerDay(obj.get("wt").getAsLong());
 						setPredPause((obj.get("pp").getAsLong()));
-					}else if(obj.get("seq") != null){
+					} else if (obj.get("seq") != null) {
 						tp.setStart(obj.get("i").getAsLong());
-					}else if(obj.get("s") != null){
+					} else if (obj.get("s") != null) {
 						TimePack tp = new TimePack();
 						tp.setStart(obj.get("i").getAsLong());
 						tp.setEnd(obj.get("o").getAsLong());
@@ -274,7 +274,7 @@ public class DataManager {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally{
+		} finally {
 			try {
 				br.close();
 			} catch (IOException e) {
@@ -283,31 +283,32 @@ public class DataManager {
 		}
 	}
 
-	private File getYearFile(Calendar cal){
+	private File getYearFile(Calendar cal) {
 		File basePath = getBasePath();
 
 		int year = cal.get(Calendar.YEAR);
-		return new File(basePath,String.valueOf(year));
+		return new File(basePath, String.valueOf(year));
 	}
 
-	private File getMonthFile(Calendar cal){
+	private File getMonthFile(Calendar cal) {
 		File yearPath = getYearFile(cal);
 
 		String month = cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
-		return new File(yearPath,month);
+		return new File(yearPath, month);
 	}
 
-	private File getDayFile(Calendar cal){
+	private File getDayFile(Calendar cal) {
 		File monthFile = getMonthFile(cal);
-		return new File(monthFile, cal.get(Calendar.DAY_OF_MONTH)+"_"+cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
+		return new File(monthFile, cal.get(Calendar.DAY_OF_MONTH) + "_"
+				+ cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()));
 	}
 
-	private File directoryManager() throws IOException{
+	private File directoryManager() throws IOException {
 		Calendar cal = Calendar.getInstance();
 
 		File dayPath = getDayFile(cal);
 
-		if(!dayPath.exists()){
+		if (!dayPath.exists()) {
 			dayPath.getParentFile().mkdirs();
 			Files.createFile(dayPath.toPath());
 		}
@@ -315,7 +316,7 @@ public class DataManager {
 		return dayPath;
 	}
 
-	public static File getBasePath(){
+	public static File getBasePath() {
 		return new File(System.getProperty("java.io.tmpdir"), ".tms");
 	}
 }

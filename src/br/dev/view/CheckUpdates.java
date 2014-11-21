@@ -7,15 +7,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.StringTokenizer;
 
-import javax.print.attribute.standard.JobSheets;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -33,7 +29,6 @@ import org.apache.commons.io.FileUtils;
 import br.dev.controller.business.DataManager;
 import br.dev.controller.business.Util;
 
-
 public class CheckUpdates {
 
 	private static JDialog dialog;
@@ -50,6 +45,7 @@ public class CheckUpdates {
 
 	/**
 	 * Initialize the contents of the frame.
+	 * 
 	 * @wbp.parser.entryPoint
 	 */
 	@SuppressWarnings("serial")
@@ -58,10 +54,10 @@ public class CheckUpdates {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				if(!isUpToDate()){
+				if (!isUpToDate()) {
 					btnOk.setEnabled(true);
 					btnOk.setVisible(true);
-				}else{
+				} else {
 					dialog.dispose();
 				}
 			}
@@ -78,14 +74,12 @@ public class CheckUpdates {
 
 		final KeyStroke escapeStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
 		final String dispatchWindowClosingActionMapKey = "com.spodding.tackline.dispatch:WINDOW_CLOSING";
-		dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-				.put(escapeStroke, dispatchWindowClosingActionMapKey);
+		dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeStroke, dispatchWindowClosingActionMapKey);
 
 		Action dispatchClosing = new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				dialog.dispatchEvent(new WindowEvent(dialog,
-						WindowEvent.WINDOW_CLOSING));
+				dialog.dispatchEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING));
 			}
 		};
 
@@ -112,15 +106,13 @@ public class CheckUpdates {
 
 					File basePath = DataManager.getBasePath();
 
-					File fileDest = new File(
-							new File(System.getProperty("user.dir")+"\\TMS-"+newVersion+".jar"),
-							"TMS-"+newVersion+".jar"
-						);
+					File fileDest = new File(new File(System.getProperty("user.dir") + "\\TMS-" + newVersion + ".jar"), "TMS-" + newVersion
+							+ ".jar");
 
 					FileUtils.writeByteArrayToFile(fileDest, Util.inputStreamToByteArray(is));
 
 					Runtime runTime = Runtime.getRuntime();
-					runTime.exec("java -jar "+fileDest.getAbsoluteFile());
+					runTime.exec("java -jar " + fileDest.getAbsoluteFile());
 
 					System.exit(0);
 				} catch (IOException e1) {
@@ -131,14 +123,13 @@ public class CheckUpdates {
 
 		dialog.getContentPane().add(btnOk);
 
-
 		dialog.getContentPane().add(lblMsg);
 
 		separator = new JSeparator();
 		separator.setBounds(15, 84, 275, 2);
 		dialog.getContentPane().add(separator);
 
-		JLabel labelVersion = new JLabel("TimeSheet Version "+Util.getVersionNumber());
+		JLabel labelVersion = new JLabel("TimeSheet Version " + Util.getVersionNumber());
 		labelVersion.setHorizontalAlignment(SwingConstants.CENTER);
 		labelVersion.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
 		labelVersion.setBounds(10, 34, 285, 14);
@@ -148,51 +139,55 @@ public class CheckUpdates {
 		return isDone;
 	}
 
-	private static boolean isUpToDate(){
+	private static boolean isUpToDate() {
 		byte[] responseBytes = null;
 
-			URL url;
+		URL url;
+		try {
+			url = new URL(Util.getVersion());
+			InputStream is = url.openStream();
+			responseBytes = Util.inputStreamToByteArray(is);
+		} catch (IOException e1) {
+			lblMsg.setText("No internet connection avaliable!");
+			return true;
+		} finally {
 			try {
-				url = new URL(Util.getVersion());
-				InputStream is = url.openStream();
-				responseBytes = Util.inputStreamToByteArray(is);
-			} catch (IOException e1) {
-				lblMsg.setText("No internet connection avaliable!");
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		String downloadedString = new String(responseBytes);
+
+		StringTokenizer curVersionTokens = new StringTokenizer(downloadedString, ".");
+		StringTokenizer thisVersionTokens = new StringTokenizer(Util.getVersionNumber(), ".");
+		StringTokenizer control = curVersionTokens.countTokens() > thisVersionTokens.countTokens() ? curVersionTokens : thisVersionTokens;
+		int vCur, vThis;
+
+		while (control.hasMoreElements()) {
+			if (curVersionTokens.hasMoreElements())
+				vCur = Integer.valueOf(curVersionTokens.nextElement().toString()).intValue();
+			else
+				vCur = 0;
+
+			if (thisVersionTokens.hasMoreElements())
+				vThis = Integer.valueOf(thisVersionTokens.nextElement().toString()).intValue();
+			else
+				vThis = 0;
+
+			if (vCur > vThis) {
+				lblMsg.setText("New version " + downloadedString + " avaliable !");
+				newVersion = downloadedString;
+				return false;
+			}
+			if (vCur < vThis) {
+				lblMsg.setText("No updates avaliable!");
 				return true;
-			}finally{
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 			}
+		}
 
-			String downloadedString = new String(responseBytes);
-
-			StringTokenizer curVersionTokens = new StringTokenizer(downloadedString, ".");
-			StringTokenizer thisVersionTokens = new StringTokenizer(Util.getVersionNumber(), ".");
-			StringTokenizer control =  curVersionTokens.countTokens() > thisVersionTokens.countTokens() ? curVersionTokens : thisVersionTokens;
-			int vCur, vThis;
-
-			while (control.hasMoreElements()) {
-				if (curVersionTokens.hasMoreElements()) vCur = Integer.valueOf(curVersionTokens.nextElement().toString()).intValue();
-				else vCur = 0;
-
-				if (thisVersionTokens.hasMoreElements()) vThis = Integer.valueOf(thisVersionTokens.nextElement().toString()).intValue();
-				else vThis = 0;
-
-				if (vCur > vThis) {
-					lblMsg.setText("New version "+downloadedString+" avaliable !");
-					newVersion = downloadedString;
-					return false;
-				}
-				if (vCur < vThis) {
-					lblMsg.setText("No updates avaliable!");
-					return true;
-				}
-			}
-
-			lblMsg.setText("No updates avaliable!");
+		lblMsg.setText("No updates avaliable!");
 
 		try {
 			Thread.sleep(800);

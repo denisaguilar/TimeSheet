@@ -31,7 +31,7 @@ import br.dev.controller.business.Util;
 import br.dev.model.JTextFieldLimit;
 import br.dev.model.KeyListenerLimit;
 
-public class CustomTime{
+public class CustomTime {
 
 	private Date customDate;
 	private boolean isDone;
@@ -73,8 +73,7 @@ public class CustomTime{
 
 		dialog = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
 		dialog.setTitle("Custom Time");
-		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(
-				CustomTime.class.getResource("/resources/calendar-16.png")));
+		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(CustomTime.class.getResource("/resources/calendar-16.png")));
 		dialog.setResizable(false);
 		dialog.setBounds(100, 100, 326, 170);
 		dialog.getContentPane().setLayout(null);
@@ -82,19 +81,16 @@ public class CustomTime{
 
 		final KeyStroke escapeStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
 		final String dispatchWindowClosingActionMapKey = "com.spodding.tackline.dispatch:WINDOW_CLOSING";
-		dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-				.put(escapeStroke, dispatchWindowClosingActionMapKey);
+		dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeStroke, dispatchWindowClosingActionMapKey);
 
 		Action dispatchClosing = new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				dialog.dispatchEvent(new WindowEvent(dialog,
-						WindowEvent.WINDOW_CLOSING));
+				dialog.dispatchEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING));
 			}
 		};
 
 		dialog.getRootPane().getActionMap().put(dispatchWindowClosingActionMapKey, dispatchClosing);
-
 
 		textSecond = new JTextField();
 		textSecond.setColumns(2);
@@ -157,8 +153,7 @@ public class CustomTime{
 		dialog.getContentPane().add(textHour);
 
 		JButton btnOk = new JButton("Ok");
-		btnOk.setIcon(new ImageIcon(CustomTime.class
-				.getResource("/resources/checkmark-24-16.png")));
+		btnOk.setIcon(new ImageIcon(CustomTime.class.getResource("/resources/checkmark-24-16.png")));
 		dialog.getRootPane().setDefaultButton(btnOk);
 
 		btnOk.addActionListener(new ActionListener() {
@@ -166,19 +161,15 @@ public class CustomTime{
 			public void actionPerformed(ActionEvent arg0) {
 				Calendar cal = Calendar.getInstance();
 
-				cal.set(Calendar.HOUR_OF_DAY,
-						Integer.parseInt(textHour.getText()));
+				cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(textHour.getText()));
 				cal.set(Calendar.MINUTE, Integer.parseInt(textMinute.getText()));
 				cal.set(Calendar.SECOND, Integer.parseInt(textSecond.getText()));
 
 				customDate = cal.getTime();
 
 				if (customDate.getTime() > new Date().getTime()) {
-					JOptionPane
-							.showMessageDialog(
-									null,
-									"The final time can not be longer than the initial time!",
-									"Wow", JOptionPane.WARNING_MESSAGE);
+					JOptionPane.showMessageDialog(null, "The final time can not be longer than the initial time!", "Wow",
+							JOptionPane.WARNING_MESSAGE);
 				} else {
 					dialog.setVisible(false);
 					isDone = true;
@@ -189,8 +180,7 @@ public class CustomTime{
 		dialog.getContentPane().add(btnOk);
 
 		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setIcon(new ImageIcon(CustomTime.class
-				.getResource("/resources/cancel-16.png")));
+		btnCancel.setIcon(new ImageIcon(CustomTime.class.getResource("/resources/cancel-16.png")));
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {

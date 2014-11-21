@@ -11,14 +11,14 @@ public class KeyListenerLimit implements KeyListener {
 	int nextPress = 1;
 	boolean complete = false;
 
-	public KeyListenerLimit(int size, JTextField next){
+	public KeyListenerLimit(int size, JTextField next) {
 		component = next;
 		predSize = size;
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		if(nextPress == predSize){
+		if (nextPress == predSize) {
 			complete = true;
 		}
 	}
@@ -29,10 +29,10 @@ public class KeyListenerLimit implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		JTextField te =  (JTextField) e.getComponent();
+		JTextField te = (JTextField) e.getComponent();
 		nextPress = te.getDocument().getLength() + 1;
 
-		if(complete){
+		if (complete) {
 			component.requestFocus();
 			complete = false;
 			nextPress = 1;

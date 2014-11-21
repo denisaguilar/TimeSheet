@@ -83,26 +83,21 @@ public class NewTimeSheet {
 
 		dialog = new JDialog(null, JDialog.ModalityType.APPLICATION_MODAL);
 		dialog.setTitle("New TimeSheet");
-		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(
-				NewTimeSheet.class
-						.getResource("/resources/icon-ios7-gear-16.png")));
+		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(NewTimeSheet.class.getResource("/resources/icon-ios7-gear-16.png")));
 		dialog.setResizable(false);
 
 		final KeyStroke escapeStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
 		final String dispatchWindowClosingActionMapKey = "com.spodding.tackline.dispatch:WINDOW_CLOSING";
-		dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-				.put(escapeStroke, dispatchWindowClosingActionMapKey);
+		dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeStroke, dispatchWindowClosingActionMapKey);
 
 		Action dispatchClosing = new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				dialog.dispatchEvent(new WindowEvent(dialog,
-						WindowEvent.WINDOW_CLOSING));
+				dialog.dispatchEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING));
 			}
 		};
 
-		dialog.getRootPane().getActionMap()
-				.put(dispatchWindowClosingActionMapKey, dispatchClosing);
+		dialog.getRootPane().getActionMap().put(dispatchWindowClosingActionMapKey, dispatchClosing);
 
 		dialog.addWindowListener(new WindowAdapter() {
 			@Override
@@ -128,20 +123,17 @@ public class NewTimeSheet {
 		dialog.getContentPane().add(lblS);
 
 		JLabel lblNewLabel = new JLabel("TimeBase (HH:MM:SS)");
-		lblNewLabel.setIcon(new ImageIcon(NewTimeSheet.class
-				.getResource("/resources/prisoner-16.png")));
+		lblNewLabel.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/prisoner-16.png")));
 		lblNewLabel.setBounds(10, 38, 161, 14);
 		dialog.getContentPane().add(lblNewLabel);
 
 		JLabel lblUpdateinterval = new JLabel("UpdateInterval (Seconds)");
-		lblUpdateinterval.setIcon(new ImageIcon(NewTimeSheet.class
-				.getResource("/resources/update-16.png")));
+		lblUpdateinterval.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/update-16.png")));
 		lblUpdateinterval.setBounds(11, 84, 161, 14);
 		dialog.getContentPane().add(lblUpdateinterval);
 
 		JLabel lblNewLabel_1 = new JLabel("Clock Update Interval");
-		lblNewLabel_1.setIcon(new ImageIcon(NewTimeSheet.class
-				.getResource("/resources/icon-ios7-clock-outline-16.png")));
+		lblNewLabel_1.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/icon-ios7-clock-outline-16.png")));
 		lblNewLabel_1.setBounds(11, 108, 161, 14);
 		dialog.getContentPane().add(lblNewLabel_1);
 
@@ -326,8 +318,7 @@ public class NewTimeSheet {
 		dialog.getContentPane().add(lblConfigureApplication);
 
 		JButton btnSave = new JButton("Save");
-		btnSave.setIcon(new ImageIcon(NewTimeSheet.class
-				.getResource("/resources/checkmark-24-16.png")));
+		btnSave.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/checkmark-24-16.png")));
 		dialog.getRootPane().setDefaultButton(btnSave);
 		btnSave.addActionListener(new ActionListener() {
 
@@ -338,31 +329,23 @@ public class NewTimeSheet {
 				Date timeI = null;
 
 				try {
-					timeBase = sdf.parse(String.format("%s:%s:%s",
-							textTimeHour.getText(), textTimeMinute.getText(),
+					timeBase = sdf.parse(String.format("%s:%s:%s", textTimeHour.getText(), textTimeMinute.getText(),
 							textTimeSeconds.getText()));
-					timeI = sdf.parse(String.format("%s:%s:%S",
-							textTimeIdleH.getText(), textTimeIdleM.getText(),
-							textTimeIdleS.getText()));
+					timeI = sdf.parse(String.format("%s:%s:%S", textTimeIdleH.getText(), textTimeIdleM.getText(), textTimeIdleS.getText()));
 
 					Date dateZero = sdf.parse("00:00:00");
-					timeDay = Util.convertTime(timeBase.getTime()
-							- dateZero.getTime());
-					predPause = Util.convertTime(timeI.getTime()
-							- dateZero.getTime());
+					timeDay = Util.convertTime(timeBase.getTime() - dateZero.getTime());
+					predPause = Util.convertTime(timeI.getTime() - dateZero.getTime());
 
 					if (!textUpdate.getText().isEmpty())
 						setUpdateSeconds(Integer.parseInt(textUpdate.getText()));
 
 					if (!textClockUpdate.getText().isEmpty())
-						setClockUpdateSeconds(Integer.parseInt(textClockUpdate
-								.getText()));
+						setClockUpdateSeconds(Integer.parseInt(textClockUpdate.getText()));
 
 					dialog.setVisible(false);
 				} catch (ParseException e) {
-					JOptionPane.showMessageDialog(dialog,
-							"Wrong format of TimeBase", "Error",
-							JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(dialog, "Wrong format of TimeBase", "Error", JOptionPane.ERROR_MESSAGE);
 				}
 
 				isDone = true;
@@ -373,8 +356,7 @@ public class NewTimeSheet {
 		dialog.getContentPane().add(btnSave);
 
 		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setIcon(new ImageIcon(NewTimeSheet.class
-				.getResource("/resources/cancel-16.png")));
+		btnCancel.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/cancel-16.png")));
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
@@ -385,8 +367,7 @@ public class NewTimeSheet {
 		dialog.getContentPane().add(btnCancel);
 
 		JLabel lblIdletime = new JLabel("IdleTime (HH:MM:SS)");
-		lblIdletime.setIcon(new ImageIcon(NewTimeSheet.class
-				.getResource("/resources/icon-pause-16.png")));
+		lblIdletime.setIcon(new ImageIcon(NewTimeSheet.class.getResource("/resources/icon-pause-16.png")));
 		lblIdletime.setBounds(10, 60, 161, 14);
 		dialog.getContentPane().add(lblIdletime);
 

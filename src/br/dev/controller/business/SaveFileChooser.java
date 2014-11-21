@@ -25,22 +25,23 @@ public class SaveFileChooser {
 		this.defaultExtensionDescription = defaultExtensionDescription;
 	}
 
-	public void setFileName(String fileName){
+	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
 
 	public boolean showDialog() {
 		JFileChooser fileChooser = new JFileChooser();
 
-		if(defaultExtensionWihoutDot == null)
+		if (defaultExtensionWihoutDot == null)
 			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		else
 			fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
 		fileChooser.setAcceptAllFileFilterUsed(true);
 
-		if(defaultExtensionWihoutDot != null)
-			fileChooser.setFileFilter(new FileNameExtensionFilter(defaultExtensionDescription + " (" + defaultExtensionWithDot + ")", defaultExtensionWihoutDot));
+		if (defaultExtensionWihoutDot != null)
+			fileChooser.setFileFilter(new FileNameExtensionFilter(defaultExtensionDescription + " (" + defaultExtensionWithDot + ")",
+					defaultExtensionWihoutDot));
 
 		File selectedFile;
 		boolean overwriteFile = false;
@@ -51,15 +52,16 @@ public class SaveFileChooser {
 
 			selectedFile = fileChooser.getSelectedFile();
 
-			if(fileName != null)
-				selectedFile = new File(String.format("%s\\%s",selectedFile.toPath(), fileName));
+			if (fileName != null)
+				selectedFile = new File(String.format("%s\\%s", selectedFile.toPath(), fileName));
 
 			if (defaultExtensionWihoutDot != null && !selectedFile.getPath().toLowerCase().endsWith(defaultExtensionWithDot.toLowerCase())) {
 				selectedFile = new File(selectedFile.getPath() + defaultExtensionWithDot);
 			}
 
 			if (selectedFile.isFile() && selectedFile.exists()) {
-				int option = JOptionPane.showConfirmDialog(parent, "O arquivo selecionado já existe. Deseja sobrescrevê-lo?", "Alerta", JOptionPane.YES_NO_CANCEL_OPTION);
+				int option = JOptionPane.showConfirmDialog(parent, "O arquivo selecionado já existe. Deseja sobrescrevê-lo?", "Alerta",
+						JOptionPane.YES_NO_CANCEL_OPTION);
 				if (option == JOptionPane.CANCEL_OPTION) {
 					return false;
 				}

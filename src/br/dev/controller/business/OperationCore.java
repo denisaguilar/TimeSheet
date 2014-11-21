@@ -54,34 +54,35 @@ public class OperationCore {
 		tempTimePack = new TimePack();
 	}
 
-	public void setInitialTime(Date date){
+	public void setInitialTime(Date date) {
 		tempTimePack = new TimePack();
 		long predicted;
 
-		//adicionado tratamento para customTime
-		if(date == null){
+		// adicionado tratamento para customTime
+		if (date == null) {
 			tempTimePack.setStart(new Date().getTime());
 			predicted = tempTimePack.getStart() + timeSheet.getTimeRemain();
-		}else{
+		} else {
 			tempTimePack.setStart(date.getTime());
 
 			predicted = tempTimePack.getStart() + timeSheet.getTimeRemain();
 
-			//Caso seja a primeira execução em CustomTime o timeElapsed é definido por (TempoAtual - TempoInicial)
-			if(timeSheet.getTimePacks().isEmpty())
+			// Caso seja a primeira execução em CustomTime o timeElapsed é definido por (TempoAtual - TempoInicial)
+			if (timeSheet.getTimePacks().isEmpty())
 				timeSheet.setTimeElapsed(new Date().getTime() - tempTimePack.getStart());
 			else
-				// Caso já existam sessions armazenadas, o tempo inicial deve ser medido por ((TempoAtual - TempoInicial) + TotalTimeElapsed)
+				// Caso já existam sessions armazenadas, o tempo inicial deve ser medido por ((TempoAtual - TempoInicial) +
+				// TotalTimeElapsed)
 				timeSheet.setTimeElapsed((new Date().getTime() - tempTimePack.getStart()) + getTotalTimeElapsed());
 
-			//Atualizando o timRemaminig
+			// Atualizando o timRemaminig
 			timeSheet.setTimeRemain(timePerDay - timeSheet.getTimeElapsed());
 		}
 
 		timeSheet.setTimePredicted(predicted);
 	}
 
-	private long getTotalTimeElapsed(){
+	private long getTotalTimeElapsed() {
 		long time = 0;
 
 		for (TimePack tp : timeSheet.getTimePacks()) {
@@ -92,27 +93,26 @@ public class OperationCore {
 
 	}
 
-	public void setFinalTime(Date date) throws Exception{
+	public void setFinalTime(Date date) throws Exception {
 
-		if(date.getTime() < getTempTimePack().getStart()){
+		if (date.getTime() < getTempTimePack().getStart()) {
 			throw new Exception();
 		}
 
-//		if(date == null)
-//			tempTimePack.setEnd(new Date().getTime());
-//		else
-			tempTimePack.setEnd(date.getTime());
+		// if(date == null)
+		// tempTimePack.setEnd(new Date().getTime());
+		// else
+		tempTimePack.setEnd(date.getTime());
 
 		tempTimePack.updateInterval();
 		timeSheet.getTimePacks().add(getTempTimePack());
 	}
 
-
-	public long updateTimeElapsed(boolean update, int updateFrequence){
+	public long updateTimeElapsed(boolean update, int updateFrequence) {
 		long diff = 0;
-		if(update)
+		if (update)
 			diff = getTimeSheet().getTimeElapsed() + Util.toSeconds(updateFrequence);
-		else{
+		else {
 			diff = getTotalTimeElapsed();
 		}
 
@@ -120,11 +120,11 @@ public class OperationCore {
 		return diff;
 	}
 
-	public long updateTimeRemain(boolean update, int updateFrequence){
+	public long updateTimeRemain(boolean update, int updateFrequence) {
 		long diff;
-		if(update)
+		if (update)
 			diff = getTimeSheet().getTimeRemain() - Util.toSeconds(updateFrequence);
-		else{
+		else {
 			diff = timePerDay - timeSheet.getTimeElapsed();
 		}
 
@@ -132,24 +132,24 @@ public class OperationCore {
 		return diff;
 	}
 
-	public long updateTimeIdle(boolean update, boolean now, int updateFrequence){
+	public long updateTimeIdle(boolean update, boolean now, int updateFrequence) {
 		List<TimePack> tps = getTimeSheet().getTimePacks();
 
 		long idleTime = 0;
 
-		if(tps.size() > 0){
-			if(update){
+		if (tps.size() > 0) {
+			if (update) {
 				temp += Util.toSeconds(updateFrequence);
 				idleTime = temp;
-			}else{
+			} else {
 				idleTime = timeSheet.getIdleTime();
-				if(now){
-					TimePack tp = tps.get(tps.size() -1);
+				if (now) {
+					TimePack tp = tps.get(tps.size() - 1);
 					idleTime += (new Date().getTime() - tp.getEnd());
-				}else{
+				} else {
 					long totalIdle = 0;
 					for (int i = 0; i < tps.size(); i++) {
-						if(tps.size() - i == 1)
+						if (tps.size() - i == 1)
 							totalIdle += (getTempTimePack().getStart() - tps.get(i).getEnd());
 						else
 							totalIdle += tps.get(i + 1).getStart() - tps.get(i).getEnd();
@@ -165,11 +165,11 @@ public class OperationCore {
 		return idleTime;
 	}
 
-	public Date toDate(long value){
+	public Date toDate(long value) {
 		return new Date(value);
 	}
 
-	public String formatDate(String format, long time){
+	public String formatDate(String format, long time) {
 		String formatDate = "dd/MM/yyyy ~> hh:mm:ss a";
 		SimpleDateFormat sdf = new SimpleDateFormat(format == null ? formatDate : format);
 		return sdf.format(new Date(time));
@@ -181,21 +181,21 @@ public class OperationCore {
 
 		sb.append("\n..::TimeSheet Console ::..");
 
-		if(getTimeSheet().getTimePacks().size() > 0){
+		if (getTimeSheet().getTimePacks().size() > 0) {
 
 			List<TimePack> tps = getTimeSheet().getTimePacks();
 
-			for (int i = tps.size()-1; i >= 0; i--) {
+			for (int i = tps.size() - 1; i >= 0; i--) {
 				TimePack tp = tps.get(i);
 
 				sb.append("\n");
-				sb.append("Session "+(i+1));
+				sb.append("Session " + (i + 1));
 				sb.append("   ------------------------------------------- \n");
-				sb.append("\tStart :"+ formatDate(format, tp.getStart()));
+				sb.append("\tStart :" + formatDate(format, tp.getStart()));
 				sb.append("\n");
-				sb.append("\tEnd  :"+ formatDate(format, tp.getEnd()));
+				sb.append("\tEnd  :" + formatDate(format, tp.getEnd()));
 				sb.append("\n");
-				sb.append("\tInterval :"+ Util.printTime(tp.getInterval(), "%sh %sm %ss"));
+				sb.append("\tInterval :" + Util.printTime(tp.getInterval(), "%sh %sm %ss"));
 
 			}
 		}

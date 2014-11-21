@@ -18,6 +18,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.KeyStroke;
@@ -28,8 +29,6 @@ import javax.swing.border.TitledBorder;
 
 import br.dev.controller.business.Util;
 import br.dev.model.listener.ButtonListener;
-
-import javax.swing.JSeparator;
 
 public class Prototype {
 
@@ -62,7 +61,7 @@ public class Prototype {
 		initialize();
 	}
 
-	public void addListner(ButtonListener listener){
+	public void addListner(ButtonListener listener) {
 		this.listener = listener;
 	}
 
@@ -73,18 +72,17 @@ public class Prototype {
 		String osInfo = System.getProperty("os.name");
 
 		try {
-			if(osInfo.toLowerCase().contains("windows"))
+			if (osInfo.toLowerCase().contains("windows"))
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			else
 				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | UnsupportedLookAndFeelException e1) {
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1) {
 			e1.printStackTrace();
 		}
 
 		frmTimesheet = new JFrame();
 		frmTimesheet.setFont(new Font("Segoe UI Semibold", Font.BOLD, 12));
-		frmTimesheet.setTitle("TimeSheet "+Util.getVersionNumber());
+		frmTimesheet.setTitle("TimeSheet " + Util.getVersionNumber());
 		frmTimesheet.setIconImage(Toolkit.getDefaultToolkit().getImage(Prototype.class.getResource("/resources/document-open-recent.png")));
 		frmTimesheet.setResizable(false);
 		frmTimesheet.setBounds(100, 100, 744, 578);
@@ -101,7 +99,8 @@ public class Prototype {
 		panel.setLayout(null);
 
 		JPanel penelPredicted = new JPanel();
-		penelPredicted.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Time Predicted", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		penelPredicted.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Time Predicted", TitledBorder.LEADING,
+				TitledBorder.TOP, null, null));
 		penelPredicted.setBounds(18, 45, 371, 121);
 		frmTimesheet.getContentPane().add(penelPredicted);
 		penelPredicted.setLayout(null);
@@ -120,7 +119,8 @@ public class Prototype {
 		console.setEditable(false);
 
 		JPanel panelStartTime = new JPanel();
-		panelStartTime.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Check-in", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelStartTime.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Check-in", TitledBorder.LEADING,
+				TitledBorder.TOP, null, null));
 		panelStartTime.setBounds(18, 208, 174, 46);
 		frmTimesheet.getContentPane().add(panelStartTime);
 		panelStartTime.setLayout(null);
@@ -133,7 +133,8 @@ public class Prototype {
 
 		JPanel panelEndTime = new JPanel();
 		panelEndTime.setLayout(null);
-		panelEndTime.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Check out", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelEndTime.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Check out", TitledBorder.LEADING,
+				TitledBorder.TOP, null, null));
 		panelEndTime.setBounds(213, 208, 177, 46);
 		frmTimesheet.getContentPane().add(panelEndTime);
 
@@ -169,7 +170,8 @@ public class Prototype {
 
 		JPanel panelIdle = new JPanel();
 		panelIdle.setLayout(null);
-		panelIdle.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Time Idle", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panelIdle.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Time Idle", TitledBorder.LEADING,
+				TitledBorder.TOP, null, null));
 		panelIdle.setBounds(18, 322, 174, 46);
 		frmTimesheet.getContentPane().add(panelIdle);
 
@@ -215,12 +217,11 @@ public class Prototype {
 		buttonFinalTime.setIcon(new ImageIcon(Prototype.class.getResource("/resources/591248-out-16.png")));
 		buttonFinalTime.setFont(new Font("Segoe UI Semibold", Font.PLAIN, 11));
 
-
 		buttonFinalTime.setEnabled(false);
 		buttonFinalTime.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if(!listener.onCheckout())
+				if (!listener.onCheckout())
 					return;
 
 				buttonInitialTime.setEnabled(true);
@@ -234,7 +235,7 @@ public class Prototype {
 		buttonInitialTime.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(!listener.onCheckin())
+				if (!listener.onCheckin())
 					return;
 
 				buttonInitialTime.setEnabled(false);
@@ -253,7 +254,7 @@ public class Prototype {
 		buttonTimeSheet.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(!listener.onNewTimeSheet())
+				if (!listener.onNewTimeSheet())
 					return;
 
 				buttonFinalTime.setEnabled(false);
@@ -306,7 +307,6 @@ public class Prototype {
 
 		JMenu mnInfo = new JMenu("TimeSheet");
 		menuBar.add(mnInfo);
-
 
 		final JMenuItem mntmCheckOut = new JMenuItem("Check out");
 		mntmCheckOut.setIcon(new ImageIcon(Prototype.class.getResource("/resources/591248-out-16.png")));
@@ -388,7 +388,6 @@ public class Prototype {
 			}
 		});
 
-
 		JMenuItem mntmAbout = new JMenuItem("About");
 		mntmAbout.setIcon(new ImageIcon(Prototype.class.getResource("/resources/info-16.png")));
 		mnAbout.add(mntmAbout);
@@ -396,7 +395,8 @@ public class Prototype {
 		mntmAbout.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				console.setText("\n TimeSheet 2014 - Version "+Util.getVersionNumber()+" \n Source: https://github.com/denisaguilar/TimeSheet"+ "\n\n Back to Console (Ctrl+Z)");
+				console.setText("\n TimeSheet 2014 - Version " + Util.getVersionNumber()
+						+ " \n Source: https://github.com/denisaguilar/TimeSheet" + "\n\n Back to Console (Ctrl+Z)");
 			}
 		});
 
@@ -404,16 +404,18 @@ public class Prototype {
 		frmTimesheet.setVisible(true);
 	}
 
-	public int showMessageChoice(final String message, final String title, final String icon){
-		return JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, new ImageIcon(Prototype.class.getResource(icon)));
+	public int showMessageChoice(final String message, final String title, final String icon) {
+		return JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE,
+				new ImageIcon(Prototype.class.getResource(icon)));
 	}
 
-	public void showMessage(final String message, final String title, final String icon){
+	public void showMessage(final String message, final String title, final String icon) {
 		Thread thread = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				JOptionPane jOptionPane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE, JOptionPane.CLOSED_OPTION, new ImageIcon(Prototype.class.getResource(icon)));
+				JOptionPane jOptionPane = new JOptionPane(message, JOptionPane.INFORMATION_MESSAGE, JOptionPane.CLOSED_OPTION,
+						new ImageIcon(Prototype.class.getResource(icon)));
 				JDialog dialog = jOptionPane.createDialog(null, title);
 				dialog.setLocationRelativeTo(null);
 				dialog.setAlwaysOnTop(true);
@@ -424,10 +426,10 @@ public class Prototype {
 		thread.start();
 	}
 
-	public void updateConsole(String info){
-		if(info != null)
+	public void updateConsole(String info) {
+		if (info != null)
 			console.setText(info);
-		else{
+		else {
 			console.setText("Go ahead... make my day.");
 		}
 	}

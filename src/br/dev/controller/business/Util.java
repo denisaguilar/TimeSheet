@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-
 public class Util {
 
 	private static final String VERSION_NUMBER = "0.6.7";
@@ -22,7 +21,7 @@ public class Util {
 
 	public static String path;
 
-	public static String printTime(long timeMilli, String format){
+	public static String printTime(long timeMilli, String format) {
 		long diffSeconds = getSeconds(timeMilli);
 		long diffMinutes = getMinuts(timeMilli);
 		long diffHours = getHours(timeMilli);
@@ -32,7 +31,7 @@ public class Util {
 		return String.format(format, diffHours, diffMinutes, diffSeconds);
 	}
 
-	public static long convertTime(long timeMilli){
+	public static long convertTime(long timeMilli) {
 		long diffSeconds = getSeconds(timeMilli);
 		long diffMinutes = getMinuts(timeMilli);
 		long diffHours = getHours(timeMilli);
@@ -41,7 +40,7 @@ public class Util {
 		return toSeconds(diffSeconds) + toMinutes(diffMinutes) + toHours(diffHours) + toDays(diffDays);
 	}
 
-	public static String[] getText(){
+	public static String[] getText() {
 		byte[] responseBytes = null;
 
 		URL url;
@@ -55,23 +54,23 @@ public class Util {
 
 		}
 
-		return new String[]{".","..",".:","::",":.",".."," ."};
+		return new String[] { ".", "..", ".:", "::", ":.", "..", " ." };
 	}
 
-	public static byte[] inputStreamToByteArray(InputStream is) throws IOException{
+	public static byte[] inputStreamToByteArray(InputStream is) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		int nRead;
 		byte[] data = new byte[16384];
 
 		try {
 			while ((nRead = is.read(data, 0, data.length)) != -1) {
-			  baos.write(data, 0, nRead);
+				baos.write(data, 0, nRead);
 			}
 
 			return baos.toByteArray();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally{
+		} finally {
 			baos.flush();
 			baos.close();
 		}
@@ -79,7 +78,7 @@ public class Util {
 		return null;
 	}
 
-	public static String getVersion(){
+	public static String getVersion() {
 		return VERSION;
 	}
 
@@ -95,35 +94,35 @@ public class Util {
 		return NOTE;
 	}
 
-	public static long toSeconds(long value){
+	public static long toSeconds(long value) {
 		return value * 1000;
 	}
 
-	public static long toMinutes(long value){
+	public static long toMinutes(long value) {
 		return value * (60 * 1000);
 	}
 
-	public static long toHours(long value){
+	public static long toHours(long value) {
 		return value * (60 * 60 * 1000);
 	}
 
-	public static long toDays(long value){
+	public static long toDays(long value) {
 		return value * (24 * 60 * 60 * 1000);
 	}
 
-	public static long getSeconds(long value){
+	public static long getSeconds(long value) {
 		return value / second % 60;
 	}
 
-	public static long getMinuts(long value){
+	public static long getMinuts(long value) {
 		return value / minute % 60;
 	}
 
-	public static long getHours(long value){
+	public static long getHours(long value) {
 		return value / hour % 24;
 	}
 
-	public static long getDay(long value){
+	public static long getDay(long value) {
 		return value / day;
 	}
 }
